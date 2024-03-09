@@ -2,6 +2,7 @@
   "expo": {
     "userInterfaceStyle": "dark",
     "scheme": "acme",
+    "icon": "./assets/icon.png",
     "ios": {
       "bundleIdentifier": "com.delectatio.want"
     },
