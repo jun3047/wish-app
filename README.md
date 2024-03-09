@@ -64,25 +64,25 @@ interface PollType {
 
 ### 요청
 
-**user**
-회원가입: ```POST/user```
-프로필 조회: 🔐 ```GET/user/profile```
+**user**  
+회원가입: ```POST/user```  
+프로필 조회: 🔐 ```GET/user/profile```  
+  
+**feed**  
+피드 작성하기: 🔐 ```POST/feed```  
+피드 가져오기: 🔐 ```GET/feeds```  
+글 신고하기: 🔐 ```PUT/feed/warn```  
+  
+**poll**  
+투표하기: 🔐 ```PUT/poll```  
+  
+**friend**  
+친구 요청: 🔐 ```PUT/friend/request```  
+친구 수락: 🔐 ```POST/friend```  
+추천 친구: 🔐 ```GET/friends```  
 
-**feed**
-피드 작성하기: 🔐 ```POST/feed```
-피드 가져오기: 🔐 ```GET/feeds```
-글 신고하기: 🔐 ```PUT/feed/warn```
-
-**poll**
-투표하기: 🔐 ```PUT/poll```
-
-**friend**
-친구 요청: 🔐 ```PUT/friend/request```
-친구 수락: 🔐 ```POST/friend```
-추천 친구: 🔐 ```GET/friends```
-
-**school**
-학교 리스트 가져오기: ```GET/school```
+**school**  
+학교 리스트 가져오기: ```GET/school```  
 
 
 
