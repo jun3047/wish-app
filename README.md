@@ -225,7 +225,7 @@ interface PoolType {
 {
     phone: string;
     school: string;
-    friendIds: string[];
+    friendIds?: string[];
 }
 ```
 
@@ -237,7 +237,21 @@ interface PoolType {
     age: number;
     gender: "boy" | "girl";
     school: string;
-    friendIds: string[];
+    friendIds?: string[];
 }[]
 ```
 
+
+### /getSchoolList (school)
+
+#### req
+```
+{}
+```
+
+#### res
+```
+{
+    school: string;
+}[]
+```
