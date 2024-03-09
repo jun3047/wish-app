@@ -2,6 +2,6 @@ import { Redirect } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const index = () => <Redirect href="/register/first"/>
+const index = () => <Redirect href="/splash"/>
 
 export default index;

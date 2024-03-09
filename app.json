@@ -1,6 +1,10 @@
 {
   "expo": {
+    "userInterfaceStyle": "dark",
     "scheme": "acme",
+    "ios": {
+      "bundleIdentifier": "com.delectatio.want"
+    },
     "web": {
       "bundler": "metro"
     },
@@ -8,6 +12,14 @@
       "expo-router"
     ],
     "name": "wish-app",
-    "slug": "wish-app"
+    "slug": "wish-app",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "82462b4d-9385-4e95-8e82-e7a4514c488b"
+      }
+    }
   }
 }
