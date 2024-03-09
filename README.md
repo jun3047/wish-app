@@ -66,7 +66,7 @@ interface PollType {
 
 **user**  
 회원가입: ```POST/user```  
-프로필 조회: 🔐 ```GET/user/profile```  
+프로필 조회: 🔐 ```GET/user/{id}```
   
 **feed**  
 피드 작성하기: 🔐 ```POST/feed```  
@@ -99,7 +99,6 @@ interface PollType {
     phone: string;
     gender: "boy" | "girl";
     school: string;
-    friendIds: string[];
     requestFriendIds: string[];
 }
 ```
@@ -112,16 +111,9 @@ interface PollType {
 ```
 
 
-### GET/user/profile
+### GET/user/{id}
 
 유저의 프로필을 조회합니다.
-
-#### rep
-```ts
-{
-    id: number;
-}
-```
 
 #### res
 ```ts
@@ -172,7 +164,6 @@ interface PollType {
 {
     token: string;
     question: string;
-    imgUrl: string;
     writerId: number;
     writerName: string;
     askerId: number;
@@ -184,6 +175,7 @@ interface PollType {
 ```ts
 {
     id: number;
+    imgUrl: string;
 }
 ```
 
@@ -239,6 +231,10 @@ interface PollType {
 ```ts
 {
     id: number;
+    name: string;
+    age: number;
+    school: string;
+    friendIds: string[]
     targetId: number;
     targetToken: string;
 }
@@ -293,7 +289,8 @@ interface PollType {
 ```
 
 
-### POST/school (school)
+### GET/school (school)
+// 로컬 DB로 대체합니다
 
 #### req
 ```ts
@@ -303,6 +300,6 @@ interface PollType {
 #### res
 ```ts
 {
-    school: string;
-}[]
+    schools: string[];
+}
 ```
