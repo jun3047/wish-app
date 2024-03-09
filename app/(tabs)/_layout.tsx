@@ -15,6 +15,7 @@ export default () => {
             tabBarInactiveTintColor: 'gray',
             tabBarStyle: {
                 backgroundColor: 'black',
+                borderTopWidth: 0,
             },
         }}>
             <Tabs.Screen
