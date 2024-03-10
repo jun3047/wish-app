@@ -1,6 +1,7 @@
 import React from 'react';
 import useVibration from '../hooks/useVibration';
 import WebView from 'react-native-webview';
+import env from '../../env.json';
 
 export default () => {
 
@@ -14,7 +15,7 @@ export default () => {
                 alignItems: 'center', 
                 backgroundColor: 'black',
             }}
-            source={{ uri: 'http://192.168.219.172:3000/friend' }}    
+            source={{ uri: `${env['WEB_URL']}/friend` }}
             onMessage={(event)=>{
               const {data} = event.nativeEvent
               if(data === '진동') return vibrate()

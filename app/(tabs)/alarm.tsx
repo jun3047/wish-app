@@ -6,6 +6,7 @@ import { shareInsta } from '../hooks/instaShare';
 import useVibration from '../hooks/useVibration';
 import useContacts from '../hooks/useContacts';
 import useImagePicker from '../hooks/useImagePicker';
+import env from '../../env.json';
 
 export default () => {
 
@@ -45,7 +46,7 @@ export default () => {
                 alignItems: 'center', 
                 backgroundColor: 'black',
             }}
-            source={{ uri: 'http://192.168.219.172:3000/alarm' }}    
+            source={{ uri: `${env['WEB_URL']}/alarm` }}
             onMessage={handleWebViewMessage}
         />
     );
