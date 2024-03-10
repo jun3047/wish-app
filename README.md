@@ -270,7 +270,7 @@ interface PollType {
 #### req
 ```ts
 {
-    phone: string;
+    phoneList: string[];
     school: string;
     friendIds?: string[];
 }
