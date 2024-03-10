@@ -1,67 +1,82 @@
-import { Stack } from 'expo-router';
-import React from 'react';
-import { Pressable, Text, View } from 'react-native';
-import * as Update from "expo-updates";
+import { Link, Stack } from 'expo-router';
+import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { FlatList, NativeSyntheticEvent, Pressable, Text, TextInputChangeEventData, View } from 'react-native';
 import styled from '@emotion/native';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import useSchoolRealm from '../data/School';
 
-export default () => {
+export default () => {    
 
-    const setUserData = async () => {
-        const userInfo = {
-            name: 'test',
-            age: 20,
+    const {filterItemsByKeyword} = useSchoolRealm()
+    const [schoolList, setSchoolList] = useState<any[] | null>(null)
+    const [searchValue, setSearchValue] = useState<string>('')
+    const [selectedSchool, setSelectedSchool] = useState<string | null>(null)
+
+    useEffect(() => {
+
+        setSchoolList(filterItemsByKeyword(searchValue, 20))
+
+        if (schoolList && schoolList.length > 0) {
+            setSelectedSchool(schoolList[0].name)
         }
-        await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
-    };
+    }, [searchValue])
 
     return (
         <RegisterWarpper>
             <Stack.Screen options={{
                 title: '학교 추가',
                 headerRight: () => (
-                    <Pressable onPress={ async ()=> {
-                            await setUserData()
-                            await Update.reloadAsync()
-                        }}>
-                        <Text style={{color: 'white'}}>Next</Text>
-                    </Pressable>
+                    <Link style={{color: 'white'}} href="/register/friends">Next</Link>
                 ),
             }} />
-            <SearchBar />
-            {
-                [1,2,3,4,5, 1,2,3,4,5].map((item, index) => {
-                    return (
-                        <SchoolBox key={index} />
-                    )
-                })
-            }
+            <SearchBar
+                value={searchValue}
+                setValue={setSearchValue}
+            />
+            <FlatList
+                style={{width: '100%'}}
+                data={schoolList}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item, index}) => (
+                    <SchoolBox 
+                        onPress={()=>setSelectedSchool(item.name)}
+                        active={selectedSchool === item.name}
+                        name={item.name} 
+                        location={item.location} 
+                    />
+                )}
+            />
         </RegisterWarpper>
     );
 }
 
 
-const SchoolBox = () => {
-
-    const active = true
+const SchoolBox = ({ name, location, active, onPress }: {
+        name: string,
+        location: string,
+        active: boolean,
+        onPress: ()=>void
+    }) => {
 
     return (
-        <SchoolBoxWarpper active={active}>
+        <SchoolBoxWarpper active={active} onPress={onPress}>
             <Avator />
             <TextBowWarpper>
                 <Text style={{color: 'white', fontSize: 18, fontWeight: '800'}}>
-                    월산중학교
+                    {name}
                 </Text>
                 <Text style={{color: 'white', fontSize: 13, fontWeight: '100'}}>
-                    경상남도 고성군
+                    {location}
                 </Text>
             </TextBowWarpper>
         </SchoolBoxWarpper>
     )
 }
 
-const SearchBar = () => {
+const SearchBar = ({value, setValue} :{
+    value: string,
+    setValue: Dispatch<React.SetStateAction<string>>
+}) => {
 
     return (
         <SearchBarWarpper>
@@ -71,7 +86,11 @@ const SearchBar = () => {
                 color='#909090'
                 style={{marginRight: 10}}
             />
-            <SearchBarInput placeholder='학교를 입력하세요'/>
+            <SearchBarInput 
+                value={value}
+                onChangeText={(text:string)=>setValue(text)}
+                placeholder='본인 학교를 입력하면 바로 나와요'
+            />
         </SearchBarWarpper>
     )
 }
