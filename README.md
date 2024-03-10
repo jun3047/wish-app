@@ -12,11 +12,12 @@ interface UserType {
     age: number;
     phone: string;
     gender: "boy" | "girl";
-    school: string;
     friendIds: string[];
     requestFriendIds: string[];
     feedIds: number[];
     alarms: Alarm[];
+    school?: string;
+    schoolLocation?: string;
 }
 ```
 
@@ -29,7 +30,8 @@ interface AlarmType {
     name: string;
     age: number;
     gender: "boy" | "girl";
-    school: string;
+    school?: string;
+    schoolLocation?: string;
     friendIds: string[];
 }
 ```
@@ -66,7 +68,7 @@ interface PollType {
 
 **user**  
 회원가입: ```POST/user```  
-프로필 조회: 🔐 ```GET/user/profile```  
+프로필 조회: 🔐 ```GET/user/{id}```
   
 **feed**  
 피드 작성하기: 🔐 ```POST/feed```  
@@ -80,9 +82,6 @@ interface PollType {
 친구 요청: 🔐 ```PUT/friend/request```  
 친구 수락: 🔐 ```POST/friend```  
 추천 친구: 🔐 ```GET/friends```  
-
-**school**  
-학교 리스트 가져오기: ```GET/school```  
 
 
 
@@ -98,9 +97,9 @@ interface PollType {
     age: number;
     phone: string;
     gender: "boy" | "girl";
-    school: string;
-    friendIds: string[];
-    requestFriendIds: string[];
+    school?: string;
+    schoolLocation?: string;
+    requestFriendIds?: string[];
 }
 ```
 
@@ -112,16 +111,9 @@ interface PollType {
 ```
 
 
-### GET/user/profile
+### GET/user/{id}
 
 유저의 프로필을 조회합니다.
-
-#### rep
-```ts
-{
-    id: number;
-}
-```
 
 #### res
 ```ts
@@ -129,7 +121,8 @@ interface PollType {
     id: number;
     name: string;
     age: number;
-    school: string;
+    school?: string;
+    schoolLocation?: string;
     friendIds: string[];
 }
 ```
@@ -143,7 +136,8 @@ interface PollType {
 ```ts
 {
     phone: string;
-    school: string;
+    school?: string;
+    schoolLocation?: string;
     friendIds: string[];
 }
 ```
@@ -172,7 +166,6 @@ interface PollType {
 {
     token: string;
     question: string;
-    imgUrl: string;
     writerId: number;
     writerName: string;
     askerId: number;
@@ -184,6 +177,7 @@ interface PollType {
 ```ts
 {
     id: number;
+    imgUrl: string;
 }
 ```
 
@@ -239,6 +233,12 @@ interface PollType {
 ```ts
 {
     id: number;
+    name: string;
+    age: number;
+    school?: string;
+    schoolLocation?: string;
+    
+    friendIds: string[]
     targetId: number;
     targetToken: string;
 }
@@ -274,8 +274,9 @@ interface PollType {
 #### req
 ```ts
 {
-    phone: string;
-    school: string;
+    phoneList: string[];
+    school?: string;
+    schoolLocation?: string;
     friendIds?: string[];
 }
 ```
@@ -287,22 +288,8 @@ interface PollType {
     name: string;
     age: number;
     gender: "boy" | "girl";
-    school: string;
+    school?: string;
+    schoolLocation?: string
     friendIds?: string[];
-}[]
-```
-
-
-### POST/school (school)
-
-#### req
-```ts
-{}
-```
-
-#### res
-```ts
-{
-    school: string;
 }[]
 ```
