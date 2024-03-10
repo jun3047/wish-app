@@ -12,11 +12,12 @@ interface UserType {
     age: number;
     phone: string;
     gender: "boy" | "girl";
-    school: string;
     friendIds: string[];
     requestFriendIds: string[];
     feedIds: number[];
     alarms: Alarm[];
+    school?: string;
+    schoolLocation?: string;
 }
 ```
 
@@ -29,7 +30,8 @@ interface AlarmType {
     name: string;
     age: number;
     gender: "boy" | "girl";
-    school: string;
+    school?: string;
+    schoolLocation?: string;
     friendIds: string[];
 }
 ```
@@ -81,9 +83,6 @@ interface PollType {
 친구 수락: 🔐 ```POST/friend```  
 추천 친구: 🔐 ```GET/friends```  
 
-**school**  
-학교 리스트 가져오기: ```GET/school```  
-
 
 
 ### POST/user
@@ -98,8 +97,9 @@ interface PollType {
     age: number;
     phone: string;
     gender: "boy" | "girl";
-    school: string;
-    requestFriendIds: string[];
+    school?: string;
+    schoolLocation?: string;
+    requestFriendIds?: string[];
 }
 ```
 
@@ -121,7 +121,8 @@ interface PollType {
     id: number;
     name: string;
     age: number;
-    school: string;
+    school?: string;
+    schoolLocation?: string;
     friendIds: string[];
 }
 ```
@@ -135,7 +136,8 @@ interface PollType {
 ```ts
 {
     phone: string;
-    school: string;
+    school?: string;
+    schoolLocation?: string;
     friendIds: string[];
 }
 ```
@@ -233,7 +235,9 @@ interface PollType {
     id: number;
     name: string;
     age: number;
-    school: string;
+    school?: string;
+    schoolLocation?: string;
+    
     friendIds: string[]
     targetId: number;
     targetToken: string;
@@ -271,7 +275,8 @@ interface PollType {
 ```ts
 {
     phoneList: string[];
-    school: string;
+    school?: string;
+    schoolLocation?: string;
     friendIds?: string[];
 }
 ```
@@ -283,23 +288,8 @@ interface PollType {
     name: string;
     age: number;
     gender: "boy" | "girl";
-    school: string;
+    school?: string;
+    schoolLocation?: string
     friendIds?: string[];
 }[]
-```
-
-
-### GET/school (school)
-// 로컬 DB로 대체합니다
-
-#### req
-```ts
-{}
-```
-
-#### res
-```ts
-{
-    schools: string[];
-}
 ```
