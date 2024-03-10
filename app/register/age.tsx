@@ -1,26 +1,52 @@
-import { Link, Stack } from 'expo-router';
-import React, { useEffect, useRef } from 'react';
-import { Text } from 'react-native';
+import { Link, Stack, router } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
+import { Pressable, Text } from 'react-native';
 import styled from '@emotion/native'
+import { useRecoilState } from 'recoil';
+import { userState } from '../../store/recoilState';
 
 export default () => {
+
+    const [userInfo, setUserInfo] = useRecoilState(userState);
+    const [age, setAge] = useState<number | null>(null)
+
+    useEffect(()=>{
+        console.log("age:", age)
+    }, [age])
+
     return (
         <RegisterWarpper>
             <Stack.Screen options={{title: ' '}} />
-            <Form />
-            <RegisterButton>
-                <Link style={{paddingTop: 20, width: '100%', height: '100%'}} href="/register/phone">
+            <Form
+                value={age}
+                setValue={setAge}
+            />
+            <RegisterButton active={!(age === null || isNaN(age))}>
+                <Pressable 
+                    onPress={()=>{
+                        if (age === null || isNaN(age)) return;
+                        setUserInfo({age, ...userInfo})
+                        router.push('/register/phone')
+                    }}
+                    style={{paddingTop: 20, width: '100%', height: '100%'}}
+                >
                 <Text style={{color: 'black', textAlignVertical: 'center', textAlign: 'center', fontWeight: '800', fontSize: 18,}}>
                     다음
                 </Text>
-                </Link>
+                </Pressable>
             </RegisterButton>
         </RegisterWarpper>
     );
 }
 
 
-const Form = () => {
+const Form = ({
+    value,
+    setValue
+}:{
+    value: number,
+    setValue: React.Dispatch<React.SetStateAction<number | null>>
+}) => {
 
     const inputRef = useRef(null);
 
@@ -33,7 +59,14 @@ const Form = () => {
     return (
         <>
         <FormText>나이를 입력해주세요</FormText>
-        <FormInput ref={inputRef} keyboardType='number-pad' />
+        <FormInput
+            onChangeText={(text:string)=>{
+                setValue(parseInt(text))
+            }}
+            placeholder='XX'
+            ref={inputRef} 
+            keyboardType='number-pad'
+        />
         </>
     )
 }
@@ -68,7 +101,7 @@ const FormText = styled.Text`
 `
 
 
-const RegisterButton = styled.View`
+const RegisterButton = styled.View<{active: boolean}>`
 
     margin-top: 40%;
     border-radius: 40px;
@@ -80,4 +113,8 @@ const RegisterButton = styled.View`
     justify-content: center;
     text-align: center;
     background-color: white;
+
+    ${props=>!props.active && `
+        opacity: 0.5;
+    `}
 `

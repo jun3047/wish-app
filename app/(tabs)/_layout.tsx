@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import useVibration from "../hooks/useVibration";
 
+
 export default () => {
 
     const virbrate = useVibration();

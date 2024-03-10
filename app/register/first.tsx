@@ -7,7 +7,7 @@ export default () => {
     return (
         <RegisterWarpper>
             <Stack.Screen options={{headerShown: false, headerTitle: ' '}} />
-            <RegisterLogoText>WANT</RegisterLogoText>
+            <RegisterLogoText>WISH</RegisterLogoText>
             <RegisterSubText>친구들이 원하는</RegisterSubText>
             <RegisterSubText>당신의 사진</RegisterSubText>
             <RegisterButton>

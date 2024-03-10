@@ -1,32 +1,52 @@
-import { Link, Stack } from 'expo-router';
+import { Link, Stack, router } from 'expo-router';
 import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { FlatList, NativeSyntheticEvent, Pressable, Text, TextInputChangeEventData, View } from 'react-native';
 import styled from '@emotion/native';
 import { Ionicons } from '@expo/vector-icons';
 import useSchoolRealm from '../data/School';
+import { useRecoilState } from 'recoil';
+import { userState } from '../../store/recoilState';
 
-export default () => {    
+export default () => {
 
+    const [userInfo, setUserInfo] = useRecoilState(userState);
     const {filterItemsByKeyword} = useSchoolRealm()
     const [schoolList, setSchoolList] = useState<any[] | null>(null)
     const [searchValue, setSearchValue] = useState<string>('')
-    const [selectedSchool, setSelectedSchool] = useState<string | null>(null)
+    const [selectedSchool, setSelectedSchool] = useState<{
+        name: string,
+        location: string
+    } | null>(null)
 
     useEffect(() => {
-
         setSchoolList(filterItemsByKeyword(searchValue, 20))
-
-        if (schoolList && schoolList.length > 0) {
-            setSelectedSchool(schoolList[0].name)
-        }
     }, [searchValue])
+
+    const onPress = ({
+        name,
+        location
+    }: {
+        name: string,
+        location: string
+    }) => {
+        setUserInfo({
+            ...userInfo,
+            school: name,
+            schoolLocation: location,
+        })
+        router.push("/register/friends")
+    }
 
     return (
         <RegisterWarpper>
             <Stack.Screen options={{
                 title: '학교 추가',
                 headerRight: () => (
-                    <Link style={{color: 'white'}} href="/register/friends">Next</Link>
+                    <Pressable onPress={()=>onPress(selectedSchool)}>
+                        <Text style={{color: 'white'}} >
+                            {selectedSchool === null ? '건너뛰기' : '선택 완료'}
+                        </Text>
+                    </Pressable>
                 ),
             }} />
             <SearchBar
@@ -39,8 +59,11 @@ export default () => {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item, index}) => (
                     <SchoolBox 
-                        onPress={()=>setSelectedSchool(item.name)}
-                        active={selectedSchool === item.name}
+                        onPress={()=>{
+                            if (selectedSchool === item) setSelectedSchool(null)
+                            else setSelectedSchool(item)
+                        }}
+                        active={selectedSchool === item}
                         name={item.name} 
                         location={item.location} 
                     />

@@ -1,44 +1,129 @@
 import { Link, Stack } from 'expo-router';
-import React from 'react';
-import { Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Pressable, Text, View } from 'react-native';
 import styled from '@emotion/native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as Update from "expo-updates";
+import getRecommendFriends from '../../api/getRecommendFriends';
+import { useRecoilState } from 'recoil';
+import { userState } from '../../store/recoilState';
+import register from '../../api/register';
 
 export default () => {
+
+    const [userInfo, setUserInfo] = useRecoilState(userState);
+
+    interface IFriend {
+        name: string;
+        age: number;
+        id: number;
+        gender: string;
+        school?: string;
+        schoolLocation?: string;
+    }
+
+    const [recommendFriendList, setRecommendFriendList] = useState<IFriend[]|null>()
+    const [selectedFriendList, setSelectedFriendList] = useState<number[]>([])
+
+    const registerUser = async () => {
+
+        setUserInfo({
+            ...userInfo,
+            requestFriendIds: selectedFriendList
+        })
+
+        const id = await register(userInfo)
+        
+        await AsyncStorage.setItem('userInfo', JSON.stringify({
+            ...userInfo,
+            id
+        }));
+    };
+
+    useEffect(()=>{
+
+        (async () => {
+            const _recommendFriendList = await getRecommendFriends({
+                phoneList: ['01012341234', '01012341235', '01012341236'],
+                school: userInfo.school,
+                schoolLocation: userInfo.schoolLocation
+            })
+            setRecommendFriendList(_recommendFriendList)
+        })()
+            
+    }, [])
+
     return (
         <RegisterWarpper>
         <Stack.Screen options={{
             title: '친구 추가',
             headerRight: () => (
-                <Link style={{color: 'white'}} href="/register/school">Next</Link>
+                <Pressable onPress={ async ()=> {
+                    await registerUser()
+                    await Update.reloadAsync()
+                }}>
+                <Text style={{color: 'white'}}>
+                    {selectedFriendList.length === 0 ? '가입하기' : '선택 완료'}
+                </Text>
+                </Pressable>
             ),
         }} />
-        {
-            [1,2,3,4,5].map((item, index) => {
-                return (
-                    <FriendBox key={index} />
-                )
-            })
-        }
+        <FlatList
+            style={{width: '100%'}}
+            data={recommendFriendList}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item, index}) => (
+                <FriendBox
+                    name={item.name}
+                    age={item.age}
+                    school={item.school}
+                    gender={item.gender}
+                    id={item.id}
+                    active={selectedFriendList.includes(item.id)}
+                    onPress={(_id)=> {
+                        selectedFriendList.includes(_id) ?
+                        setSelectedFriendList(selectedFriendList.filter((id)=>id !== _id)) :
+                        setSelectedFriendList([...selectedFriendList, _id])
+                    }}
+                />
+            )}
+        />
         </RegisterWarpper>
     );
 }
 
 
-const FriendBox = () => {
+const FriendBox = ({
+    name,
+    age,
+    school,
+    gender,
+    id,
+    active,
+    onPress
+}: {
+    name: string;
+    age: number;
+    school: string;
+    gender: string;
+    id: number;
+    active: boolean;
+    onPress: (id: number)=>void;
+}) => {
 
     return (
-        <FriendBoxWarpper>
+        <FriendBoxWarpper onPress={()=>onPress(id)}>
             <Avator />
             <TextBowWarpper>
                 <Text style={{color: 'white', fontSize: 18, fontWeight: '800'}}>
-                    친구 추가
+                    {name}
                 </Text>
                 <Text style={{color: 'white', fontSize: 13, fontWeight: '100'}}>
-                    함께 아는 친구 1명
+                    {age}살 {school}
                 </Text>
             </TextBowWarpper>
             <View style={{flex:1}} />
-            <CheckMark active={true} />
+            <CheckMark active={active} />
         </FriendBoxWarpper>
     )
 }

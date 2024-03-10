@@ -1,35 +1,59 @@
-import { Link, Stack } from 'expo-router';
-import React, { useEffect, useRef } from 'react';
-import { Text } from 'react-native';
+import { Stack, router } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { Text, Pressable, TouchableOpacity } from 'react-native';
 import styled from '@emotion/native'
+import { useRecoilState } from 'recoil';
+import { userState } from '../../store/recoilState';
 
 export default () => {
+
+    const [userInfo, setUserInfo] = useRecoilState(userState);
+
+    const setGender = (gender: 'boy' | 'girl') => {
+        setUserInfo({
+            ...userInfo,
+            gender
+        })
+    }
+    
     return (
         <RegisterWarpper>
             <Stack.Screen options={{title: ' '}} />
             <FormText>성별을 선택해주세요</FormText>
-            <GenderButton /> 
+            <GenderButton
+                setGender={setGender}
+            />
         </RegisterWarpper>
     );
 }
 
-const GenderButton = () => {
+const GenderButton = ({
+    setGender
+}:{
+    setGender: (gender: 'boy'|'girl')=> void
+}) => {
+
+    const onPress = (gender: 'boy'|'girl') => {
+        router.push("/register/name")
+        setGender(gender)
+    }
 
     return (
         <>
         <RegisterButton>
-            <Link style={{paddingTop: 20, width: '100%', height: '100%'}} href="/register/friends">
+            <TouchableOpacity onPress={()=>onPress('boy')} style={{paddingTop: 20, width: '100%', height: '100%'}}>
             <Text style={{color: 'white', textAlignVertical: 'center', textAlign: 'center', fontWeight: '800', fontSize: 18,}}>
                 boy 🙋🏻‍♂️
             </Text>
-            </Link>
+            </TouchableOpacity>
         </RegisterButton>
         <RegisterButton>
-            <Link style={{paddingTop: 20, width: '100%', height: '100%'}} href="/register/friends">
+            <TouchableOpacity onPress={()=>onPress('girl')} style={{paddingTop: 20, width: '100%', height: '100%'}}>
             <Text style={{color: 'white', textAlignVertical: 'center', textAlign: 'center', fontWeight: '800', fontSize: 18,}}>
                 girl 🙋🏻‍♀️
             </Text>
-            </Link>
+            </TouchableOpacity>
         </RegisterButton>
         </>
     )

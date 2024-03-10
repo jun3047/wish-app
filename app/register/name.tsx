@@ -8,32 +8,39 @@ import { userState } from '../../store/recoilState';
 export default () => {
 
     const [userInfo, setUserInfo] = useRecoilState(userState);
-    const [phone, setPhone] = useState<string | null>(null)
+    const [name, setName] = useState<string | null>(null)
 
-    const isPhone = (phone: string) => {
-        const regExp = /^010\d{4}\d{4}$/;
-        return regExp.test(phone);
+    const isName = (name: string) => {
+        const regExp = /^[가-힣]{2,5}$/;
+        return regExp.test(name);
+    };
+
+
+    const onPress = (name: string) => {
+
+        if(!isName(name)) return
+
+        router.push('/register/school')
+        setUserInfo({
+            ...userInfo,
+            name
+        })
     }
 
     return (
         <RegisterWarpper>
             <Stack.Screen options={{title: ' '}} />
             <Form
-                phone={ phone }
-                setPhone={ setPhone }
+                name={name}
+                setName={setName}
             />
-            <RegisterButton active={isPhone(phone)}>
-                <Pressable 
-                        onPress={()=>{
-                            if (!isPhone(phone)) return;
-                            setUserInfo({phone, ...userInfo})
-                            router.push('/register/auth')
-                        }}
-                        style={{paddingTop: 20, width: '100%', height: '100%'}}
-                    >
-                    <Text style={{color: 'black', textAlignVertical: 'center', textAlign: 'center', fontWeight: '800', fontSize: 18,}}>
-                        다음
-                    </Text>
+            <RegisterButton active={isName(name)}>
+                <Pressable onPress={()=>{onPress(name)}}
+                    style={{paddingTop: 20, width: '100%', height: '100%'}}
+                >
+                <Text style={{color: 'black', textAlignVertical: 'center', textAlign: 'center', fontWeight: '800', fontSize: 18,}}>
+                    다음
+                </Text>
                 </Pressable>
             </RegisterButton>
         </RegisterWarpper>
@@ -42,11 +49,11 @@ export default () => {
 
 
 const Form = ({
-    phone,
-    setPhone
+    name,
+    setName
 }:{
-    phone: string,
-    setPhone: React.Dispatch<React.SetStateAction<string | null>>
+    name: string,
+    setName: React.Dispatch<React.SetStateAction<string | null>>
 }) => {
 
     const inputRef = useRef(null);
@@ -59,14 +66,15 @@ const Form = ({
 
     return (
         <>
-        <FormText>전화번호를 입력해주세요</FormText>
+        <FormText>이름을 입력해주세요</FormText>
         <FormInput
             onChangeText={(text:string)=>{
-                setPhone(text)
+                setName(text)
             }}
-            placeholder='01012345678'
+            placeholder='김민수'
             ref={inputRef}
-            keyboardType='number-pad' />
+            keyboardType='default'
+        />
         </>
     )
 }
@@ -114,7 +122,7 @@ const RegisterButton = styled.View<{active: boolean}>`
     text-align: center;
     background-color: white;
 
-    ${props=>!props.active && `
+    ${props => props.active || `
         opacity: 0.5;
     `}
 `
