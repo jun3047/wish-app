@@ -259,6 +259,7 @@ interface PollType {
 {
     id: number;
     targetId: number;
+    targetToken: number;
 }
 ```
 
