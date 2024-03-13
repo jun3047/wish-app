@@ -126,7 +126,7 @@ interface PollType {
 ```
 
 
-### GET/feeds
+### POST/feeds
 
 추천 피드를 가져옵니다.
 
@@ -134,9 +134,10 @@ interface PollType {
 ```ts
 {
     phone: string;
+    warnFriendIds: number[];
+    friendIds: number[];
     school?: string;
     schoolLocation?: string;
-    friendIds: string[];
 }
 ```
 
