@@ -44,10 +44,8 @@ interface FeedType {
     question: string;
     imgUrl: string;
     warnUserIds: number[];
-    writerId: number;
-    writerName: string;
-    askerId: number;
-    askerName: string;
+    writer: UserInfo
+    asker: UserInfo
     time: string;
 }
 ```
