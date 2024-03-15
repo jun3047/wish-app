@@ -12,12 +12,23 @@ interface UserType {
     age: number;
     phone: string;
     gender: "boy" | "girl";
-    friendIds: string[];
-    requestFriendIds: string[];
+    friendIds: number[];
     feedIds: number[];
-    alarms: Alarm[];
+    requestFriendInfos: IRequestFriendInfo[];
+    addFriendIds: number[];
     school?: string;
     schoolLocation?: string;
+}
+
+interface IRequestFriendInfo {
+    token: string;
+    gender: "boy" | "girl";
+    id: number;
+    name: string;
+    age: number;
+    school: string;
+    schoolLocation: string;
+    friendIds: number[];
 }
 ```
 
@@ -44,9 +55,18 @@ interface FeedType {
     question: string;
     imgUrl: string;
     warnUserIds: number[];
-    writer: UserInfo
-    asker: UserInfo
+    writer: FeedUserType;
+    asker: FeedUserType;
     time: string;
+}
+
+interface FeedUserType {
+    id: number;
+    name: string;
+    token: string;
+    age: number;
+    school?: string;
+    schoolLocation?: string;
 }
 ```
 
@@ -117,11 +137,15 @@ interface PollType {
 ```ts
 {
     id: number;
+    token: string;
     name: string;
     age: number;
+    phone: string;
+    gender: "boy" | "girl";
+    friendIds: number[];
+    feedIds: number[];
     school?: string;
     schoolLocation?: string;
-    friendIds: string[];
 }
 ```
 
@@ -133,11 +157,9 @@ interface PollType {
 #### rep
 ```ts
 {
-    phone: string;
     warnFriendIds: number[];
     friendIds: number[];
-    school?: string;
-    schoolLocation?: string;
+    freindOfFriendIds: number[]
 }
 ```
 
@@ -163,12 +185,9 @@ interface PollType {
 #### rep
 ```ts
 {
-    token: string;
     question: string;
-    writerId: number;
-    writerName: string;
-    askerId: number;
-    askerName: string;
+    writer: FeedUserType;
+    asker: FeedUserType;
 }
 ```
 
@@ -210,10 +229,8 @@ interface PollType {
 ```ts
 {
     question: string;
-    id: number;
-    token: number;
-    targetId: number;
-    targetToken: string;
+    writer: FeedUserType;
+    asker: FeedUserType;
 }
 ```
 
@@ -256,7 +273,7 @@ interface PollType {
 #### req
 ```ts
 {
-    id: number;
+    user: FeedUserType;
     targetId: number;
     targetToken: number;
 }
@@ -269,7 +286,7 @@ interface PollType {
 }
 ```
 
-### GET/friends
+### POST/friend/recommend
 
 #### req
 ```ts
