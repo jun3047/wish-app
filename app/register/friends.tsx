@@ -2,42 +2,34 @@ import { Link, Stack } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Pressable, Text, View } from 'react-native';
 import styled from '@emotion/native';
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Update from "expo-updates";
 import getRecommendFriends from '../../api/getRecommendFriends';
 import { useRecoilState } from 'recoil';
 import { userState } from '../../store/recoilState';
 import register from '../../api/register';
+import useAsyncStorage from '../../hooks/useAsyncStorage';
+import { registerForPushNotificationsAsync } from '../../hooks/usePushNotifications';
+import { ServerUserType } from '../../type/user';
 
 export default () => {
 
     const [userInfo, setUserInfo] = useRecoilState(userState);
+    const {save} = useAsyncStorage('userInfo')
 
-    interface IFriend {
-        name: string;
-        age: number;
-        id: number;
-        gender: string;
-        school?: string;
-        schoolLocation?: string;
-    }
-
-    const [recommendFriendList, setRecommendFriendList] = useState<IFriend[]|null>()
-    const [selectedFriendList, setSelectedFriendList] = useState<number[]>([])
+    const [recommendFriendList, setRecommendFriendList] = useState<ServerUserType[]|null>()
+    const [selectedFriendList, setSelectedFriendList] = useState<ServerUserType[]>([])
 
     const registerUser = async () => {
 
+        const token = await registerForPushNotificationsAsync()
+        const id = await register({...userInfo, token, requestFriendInfos: selectedFriendList})
+
+        await save({ ...userInfo, token, id, friendIds: [], feedIds: []})
+
         setUserInfo({
             ...userInfo,
-            requestFriendIds: selectedFriendList
+            token,
         })
-
-        const id = await register(userInfo)
-        
-        await AsyncStorage.setItem('userInfo', JSON.stringify({
-            ...userInfo,
-            id
-        }));
     };
 
     useEffect(()=>{
@@ -49,6 +41,7 @@ export default () => {
                 schoolLocation: userInfo.schoolLocation
             })
             setRecommendFriendList(_recommendFriendList)
+
         })()
             
     }, [])
@@ -72,18 +65,14 @@ export default () => {
             style={{width: '100%'}}
             data={recommendFriendList}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => (
+            renderItem={({item}) => (
                 <FriendBox
-                    name={item.name}
-                    age={item.age}
-                    school={item.school}
-                    gender={item.gender}
-                    id={item.id}
-                    active={selectedFriendList.includes(item.id)}
-                    onPress={(_id)=> {
-                        selectedFriendList.includes(_id) ?
-                        setSelectedFriendList(selectedFriendList.filter((id)=>id !== _id)) :
-                        setSelectedFriendList([...selectedFriendList, _id])
+                    item={item}
+                    active={selectedFriendList.some(friend => item.id === friend.id)}
+                    onPress={(_item)=> {
+                        selectedFriendList.some(friend => _item.id === friend.id) ?
+                        setSelectedFriendList(selectedFriendList.filter((friend)=>friend.id !== _item.id)) :
+                        setSelectedFriendList([...selectedFriendList, _item])
                     }}
                 />
             )}
@@ -94,32 +83,24 @@ export default () => {
 
 
 const FriendBox = ({
-    name,
-    age,
-    school,
-    gender,
-    id,
+    item,
     active,
     onPress
 }: {
-    name: string;
-    age: number;
-    school: string;
-    gender: string;
-    id: number;
+    item: ServerUserType;
     active: boolean;
-    onPress: (id: number)=>void;
+    onPress: (id: ServerUserType)=>void;
 }) => {
 
     return (
-        <FriendBoxWarpper onPress={()=>onPress(id)}>
+        <FriendBoxWarpper onPress={()=>onPress(item)}>
             <Avator />
             <TextBowWarpper>
                 <Text style={{color: 'white', fontSize: 18, fontWeight: '800'}}>
-                    {name}
+                    {item.name}
                 </Text>
                 <Text style={{color: 'white', fontSize: 13, fontWeight: '100'}}>
-                    {age}살 {school}
+                    {item.age}살 {item.school}
                 </Text>
             </TextBowWarpper>
             <View style={{flex:1}} />

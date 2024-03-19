@@ -1,20 +1,23 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+'use client';
+
 import { Redirect, Stack, router } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { SafeAreaView, Text, View } from 'react-native';
 import { RecoilRoot } from 'recoil';
+import useAsyncStorage from '../hooks/useAsyncStorage';
+import { UserType } from '../type/user';
 
 const StackLayout = () => {
 
+    const { storedValue, save, load } = useAsyncStorage<UserType>('userInfo');
+
     useEffect(() => {
+
         const initIsLogin = async () => {
-            const userInfo = await AsyncStorage.getItem('userInfo');
-
-            // test
-            return router.replace('register/first')
-
-            router.replace(userInfo === null ? 'register/first' : 'home')
+            const _storedValue = await load()
+            console.log('initIsLogin', _storedValue)
+            const path = _storedValue?.id === undefined ? 'register/first' : 'home'
+            return router.replace(path)
         };
         
         initIsLogin();

@@ -1,22 +1,26 @@
 import { Link, Stack, router } from 'expo-router';
-import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { FlatList, NativeSyntheticEvent, Pressable, Text, TextInputChangeEventData, View } from 'react-native';
 import styled from '@emotion/native';
 import { Ionicons } from '@expo/vector-icons';
-import useSchoolRealm from '../data/School';
 import { useRecoilState } from 'recoil';
 import { userState } from '../../store/recoilState';
+import useSchoolData from '../data/School';
 
 export default () => {
 
     const [userInfo, setUserInfo] = useRecoilState(userState);
-    const {filterItemsByKeyword} = useSchoolRealm()
-    const [schoolList, setSchoolList] = useState<any[] | null>(null)
+    const {filterItemsByKeyword, initSchoolList} = useSchoolData()
+    const [schoolList, setSchoolList] = useState<any[]>(initSchoolList)
     const [searchValue, setSearchValue] = useState<string>('')
     const [selectedSchool, setSelectedSchool] = useState<{
         name: string,
         location: string
     } | null>(null)
+
+    useEffect(() => {
+        setSchoolList(filterItemsByKeyword('가', 20))
+    }, [])
 
     useEffect(() => {
         setSchoolList(filterItemsByKeyword(searchValue, 20))
@@ -101,6 +105,15 @@ const SearchBar = ({value, setValue} :{
     setValue: Dispatch<React.SetStateAction<string>>
 }) => {
 
+
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, []);
+
     return (
         <SearchBarWarpper>
             <Ionicons
@@ -110,6 +123,7 @@ const SearchBar = ({value, setValue} :{
                 style={{marginRight: 10}}
             />
             <SearchBarInput 
+                ref={inputRef}
                 value={value}
                 onChangeText={(text:string)=>setValue(text)}
                 placeholder='본인 학교를 입력하면 바로 나와요'

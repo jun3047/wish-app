@@ -1,3 +1,5 @@
+'use client';
+
 import { Link, Stack, router } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, Text } from 'react-native';
@@ -10,22 +12,15 @@ export default () => {
     const [userInfo, setUserInfo] = useRecoilState(userState);
     const [age, setAge] = useState<number | null>(null)
 
-    useEffect(()=>{
-        console.log("age:", age)
-    }, [age])
-
     return (
         <RegisterWarpper>
             <Stack.Screen options={{title: ' '}} />
-            <Form
-                value={age}
-                setValue={setAge}
-            />
+            <Form setValue={setAge} />
             <RegisterButton active={!(age === null || isNaN(age))}>
                 <Pressable 
                     onPress={()=>{
                         if (age === null || isNaN(age)) return;
-                        setUserInfo({age, ...userInfo})
+                        setUserInfo({...userInfo, age})
                         router.push('/register/phone')
                     }}
                     style={{paddingTop: 20, width: '100%', height: '100%'}}
@@ -41,10 +36,8 @@ export default () => {
 
 
 const Form = ({
-    value,
     setValue
 }:{
-    value: number,
     setValue: React.Dispatch<React.SetStateAction<number | null>>
 }) => {
 
@@ -61,6 +54,7 @@ const Form = ({
         <FormText>나이를 입력해주세요</FormText>
         <FormInput
             onChangeText={(text:string)=>{
+                console.log('text:', text)
                 setValue(parseInt(text))
             }}
             placeholder='XX'

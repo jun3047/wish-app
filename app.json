@@ -19,8 +19,15 @@
         "origin": false
       },
       "eas": {
-        "projectId": "82462b4d-9385-4e95-8e82-e7a4514c488b"
+        "projectId": "e9723cac-047f-45a8-b6e0-626f30f2e52f"
       }
-    }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/e9723cac-047f-45a8-b6e0-626f30f2e52f"
+    },
+    "android": {}
   }
 }

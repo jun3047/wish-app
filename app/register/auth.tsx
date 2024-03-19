@@ -2,12 +2,17 @@ import { Link, Stack, router } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, Text } from 'react-native';
 import styled from '@emotion/native'
+import { useRecoilState } from 'recoil';
+import { userState } from '../../store/recoilState';
 
 export default () => {
 
+    const [userInfo, setUserInfo] = useRecoilState(userState);
     const [auth, setAuth] = useState<string | null>(null)
 
-    const authNumber = '123456';
+    const authNumber = userInfo.phone.split("+")[1];
+    const phone = userInfo.phone.split("+")[0];
+    console.log(authNumber)
 
     const isAuth = (auth: string) => auth === authNumber;
     const isSixDigit = (auth: string) => {
@@ -26,6 +31,8 @@ export default () => {
                 <Pressable onPress={()=>{
                     if(!isSixDigit(auth)) return
                     if(!isAuth(auth)) return alert('인증번호가 일치하지 않습니다.')
+
+                    setUserInfo({...userInfo, phone: phone})
                     router.replace('/register/gender')
 
                 }} style={{paddingTop: 20, width: '100%', height: '100%'}}>

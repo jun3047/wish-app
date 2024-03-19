@@ -1,5 +1,6 @@
 import axios from "axios";
-import env from "../env.json";
+import { ServerUserType, UserType } from "../type/user";
+import { sendPushNotification } from "../hooks/usePushNotifications";
 
 export default async function register({
         token,
@@ -9,7 +10,7 @@ export default async function register({
         gender,
         school,
         schoolLocation,
-        requestFriendIds,
+        requestFriendInfos,
     }: {
         token: string;
         name: string;
@@ -18,12 +19,10 @@ export default async function register({
         gender: "boy" | "girl";
         school?: string;
         schoolLocation?: string;
-        requestFriendIds?: number[];
+        requestFriendInfos?: ServerUserType[];
     }) {
 
-    const API_URL = env["API_URL"]
-
-    const {data} = await axios.post(`${API_URL}/user`, {
+    const {data} = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/user`, {
         token,
         name,
         age,
@@ -31,8 +30,23 @@ export default async function register({
         gender,
         school,
         schoolLocation,
-        requestFriendIds,
+        requestFriendIds: requestFriendInfos?.map((friend) => friend.id) || [],
     });
+    
+    requestFriendInfos.forEach(async (friend) => {
+
+        console.log('sendPushNotification!', friend.token)
+        console.log('sendPushNotification!', friend)
+
+        await sendPushNotification(friend.token, {
+            title: "새로운 친구 요청",
+            body: "지금 확인해보세요",
+            data: {
+                user: friend,
+                type: "req_friend",
+            },
+        })
+    })
 
     return data.id;
 }

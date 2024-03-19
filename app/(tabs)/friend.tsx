@@ -1,25 +1,9 @@
 import React from 'react';
-import useVibration from '../hooks/useVibration';
-import WebView from 'react-native-webview';
-import env from '../../env.json';
+import CustomWebView from '../../components/CustomWebView';
 
 export default () => {
-
-    const vibrate = useVibration()
-
-    return (
-      <WebView
-            style={{
-                flex: 1, 
-                justifyContent: 'center', 
-                alignItems: 'center', 
-                backgroundColor: 'black',
-            }}
-            source={{ uri: `${env['WEB_URL']}/friend` }}
-            onMessage={(event)=>{
-              const {data} = event.nativeEvent
-              if(data === '진동') return vibrate()
-            }}
-        />
-    );
-  }
+  
+  return (
+    <CustomWebView uri={'friend'} />
+    )
+}

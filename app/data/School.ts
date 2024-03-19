@@ -1,57 +1,33 @@
-import Realm, { ObjectSchema } from 'realm';
-import SchoolList from './schoolList.json';
 import { useEffect, useState } from 'react';
+import schoolList from './schoolList.json'; // JSON 파일 불러오기
 
-const useSchoolRealm = () => {
-
-    class School {}
-
-    const SchoolSchema: ObjectSchema = {
-        name: 'School',
-        properties: {
-            name: 'string',
-            location: 'string',
-            id: 'int',
-        },
-        primaryKey: 'id',
-    };
-
-    const [realm, setRealm] = useState<Realm>(new Realm({ schema: [SchoolSchema] }));
-
-    useEffect(() => {
-
-        try{
-            Realm.deleteFile({});
-            realm.write(() => {
-                let id = 0;
-                SchoolList.forEach(school => {
-                    realm.create('School', {...school, id: id++});
-                });
-            });
-        }
-        catch(e){
-            console.log(e);
-        }
-    
-        return () => {
-            realm.close();
-        };
-    }, []);
-
-    const filterItemsByKeyword = (
-        keyword: string,
-        endIndex: number,
-        ) => {
-    
-        const filteredSchools = realm.objects<School>('School').filtered(`name CONTAINS[c] "${keyword}"`);
-        return filteredSchools.slice(0, endIndex);
-    };
-
-    return {
-        filterItemsByKeyword,
-    }
+// School 타입 정의 (필요에 따라 수정)
+interface School {
+  name: string;
+  location: string;
+  id: number;
 }
 
-export default useSchoolRealm;
+const useSchoolData = () => {
 
+  const [schools, setSchools] = useState<School[]>([]);
 
+  useEffect(() => {
+    setSchools(schoolList);
+  }, []);
+
+  const filterItemsByKeyword = (keyword: string, endIndex: number): School[] => {
+    const filteredSchools = schools.filter(school =>
+      school.name.toLowerCase().includes(keyword.toLowerCase())
+    );
+    // endIndex를 사용하여 결과 제한
+    return filteredSchools.slice(0, endIndex);
+  };
+
+  return {
+    filterItemsByKeyword,
+    initSchoolList: schoolList.slice(0, 20)
+  };
+};
+
+export default useSchoolData;

@@ -1,6 +1,6 @@
-import { Link, Stack } from 'expo-router';
+import { Link, Stack, router } from 'expo-router';
 import React from 'react';
-import { Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
 import styled from '@emotion/native'
 
 export default () => {
@@ -11,9 +11,15 @@ export default () => {
             <RegisterSubText>친구들이 원하는</RegisterSubText>
             <RegisterSubText>당신의 사진</RegisterSubText>
             <RegisterButton>
-                <Link style={{paddingTop: 20, width: '100%', height: '100%'}} href="/register/age">
+                <Pressable 
+                    onPress={()=> {
+                        console.log('click')
+                        router.replace('/register/age')
+                    }}
+                    style={{paddingTop: 20, width: '100%', height: '100%'}}
+                >
                 <Text style={{color: 'black', textAlignVertical: 'center', textAlign: 'center', fontWeight: '800', fontSize: 18,}}>시작하기</Text>
-                </Link>
+                </Pressable>
             </RegisterButton>
             <RegisterTermsText>진행시 이용약관과 개인정보 처리방침에</RegisterTermsText>
             <RegisterTermsText>동의한 것으로 간주합니다.</RegisterTermsText>

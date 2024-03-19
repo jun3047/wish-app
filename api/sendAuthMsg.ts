@@ -1,52 +1,77 @@
 import axios from 'axios';
-import env from '../env.json';
+import CryptoJS from 'react-native-crypto-js';
 
-const sendMessage = (phone: string, authCode: string): Promise<number> => {
+function makeSignature() {
+  const timestamp = Date.now().toString();
+  const secretKey = process.env.EXPO_PUBLIC_NAVER_SECRET_KEY
+  const uri = process.env.EXPO_PUBLIC_SERVICE_ID
+  const accessKey = process.env.EXPO_PUBLIC_NAVER_ACCESS_KEY_ID
+  const space = ' '; // 한 칸 띄우기
+  const newLine = '\n'; // 새로운 줄
+  const method = 'GET'; // 메소드
+  const url = `https://sens.apigw.ntruss.com/sms/v2/services/${uri}/messages`;
+
+  // HMAC SHA256 생성
+  const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, secretKey);
+  hmac.update(method);
+  hmac.update(space);
+  hmac.update(url);
+  hmac.update(newLine);
+  hmac.update(timestamp);
+  hmac.update(newLine);
+  hmac.update(accessKey);
+
+  const hash = hmac.finalize();
+
+  return hash.toString(CryptoJS.enc.Base64);
+}
+
+const sendMessage = async (phone: string, authCode: string): Promise<number> => {
+
+  console.log({
+    type: 'SMS',
+    countryCode: '82',
+    from: process.env.EXPO_PUBLIC_PHONE,
+    secretKey: process.env.EXPO_PUBLIC_NAVER_SECRET_KEY,
+    accessKey: process.env.EXPO_PUBLIC_NAVER_ACCESS_KEY_ID,
+    uri: process.env.EXPO_PUBLIC_SERVICE_ID,
+  });
+
   const user_phone_number = phone;
-  let resultCode: number = 404;
+  let resultCode = 404;
 
   const date = Date.now().toString();
-  const uri = 'your_service_id';
-  const secretKey = 'your_secret_key';
-  const accessKey = 'your_access_key_id';
-  const method = 'POST';
-  const space = ' ';
-  const newLine = '\n';
+  const uri = process.env.EXPO_PUBLIC_SERVICE_ID;
+  const accessKey = process.env.EXPO_PUBLIC_NAVER_ACCESS_KEY_ID;
   const url = `https://sens.apigw.ntruss.com/sms/v2/services/${uri}/messages`;
-  const url2 = `/sms/v2/services/${uri}/messages`;
 
-  // 이 부분에서는 React Native에서 지원하는 암호화 라이브러리를 사용하거나
-  // 네이티브 모듈을 이용하여 처리해야 합니다.
-  // crypto 모듈을 직접 사용할 수 없습니다.
+  const signature = makeSignature();
 
-  // 암호화 부분은 생략하고 axios로 요청 보내는 부분만 작성합니다.
-  return axios
-    .post(url, {
-      type: 'SMS',
-      countryCode: '82',
-      from: 'your_phone_number',
-      content: `[FIND] 인증번호 [${authCode}]를 입력해주세요 :)`,
-      messages: [
-        {
-          to: user_phone_number,
-        },
-      ],
-    }, {
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'x-ncp-iam-access-key': accessKey,
-        'x-ncp-apigw-timestamp': date,
-        'x-ncp-apigw-signature-v2': 'your_signature',
+  try {
+    await axios.post(
+      url,
+      {
+        type: 'SMS',
+        countryCode: '82',
+        from: process.env.EXPO_PUBLIC_PHONE,
+        content: `[WISH] 인증번호 [${authCode}]를 입력해주세요 :)`,
+        messages: [{ to: user_phone_number }],
       },
-    })
-    .then(response => {
-      resultCode = 200;
-      return resultCode;
-    })
-    .catch(error => {
-      console.error(error.response);
-      return resultCode;
-    });
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'x-ncp-iam-access-key': accessKey,
+          'x-ncp-apigw-timestamp': date,
+          'x-ncp-apigw-signature-v2': signature,
+        },
+      }
+    );
+    resultCode = 200;
+  } catch (error) {
+    console.error(error.response);
+  }
+
+  return resultCode;
 };
 
 export default sendMessage;

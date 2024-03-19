@@ -1,6 +1,7 @@
-import { Redirect } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserType } from '../type/user';
+import useAsyncStorage from '../hooks/useAsyncStorage';
 
 const index = () => <Redirect href="/splash"/>
 

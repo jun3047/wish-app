@@ -1,31 +1,70 @@
-import React from 'react';
-import useVibration from '../hooks/useVibration';
-import WebView from 'react-native-webview';
-import { router } from 'expo-router';
-import env from '../../env.json';
+import React, { useEffect, useRef } from 'react';
+import CustomWebView from '../../components/CustomWebView';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import { scheduleLocalNotificationAsync, sendPushNotification } from '../../hooks/usePushNotifications';
+import useAsyncStorage from '../../hooks/useAsyncStorage';
+import { ServerUserType, UserType } from '../../type/user';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export default () => {
 
-    const vibrate = useVibration()
+  const notificationListener = useRef<Notifications.Subscription>();
+  const responseListener = useRef<Notifications.Subscription>();
 
-    return (
-      <WebView
-            style={{
-                flex: 1, 
-                justifyContent: 'center', 
-                alignItems: 'center', 
-                backgroundColor: 'black',
-            }}
-            source={{ uri: `${env['WEB_URL']}/home` }}
-            onMessage={(event)=>{
-              const {data} = event.nativeEvent
-              if(data === '진동') return vibrate()
-              if(data === '알림이동') return router.navigate('/alarm')
-              if(data === '친구이동') return router.navigate('/friend')
-              if(data.includes('프로필이동')) {
-                return router.navigate(`/profile/${data.replace('프로필이동', '')}`)
-              }
-            }}
-        />
-    );
+  const {save} = useAsyncStorage<UserType>('userInfo')
+  const userInfo = useAsyncStorage<UserType>('userInfo').storedValue
+
+  const handleNotification = async (data: Record<string, any>) => {
+
+    if (data.type === 'req_friend') {
+      await save({
+        ...userInfo,
+        requestFriendInfos: 
+        userInfo?.requestFriendInfos ? 
+        [ ...userInfo.requestFriendInfos, data.user as ServerUserType]:
+        [ data.user as ServerUserType]
+      })
+    }
+
+    if (data.type === 'be_friend') {
+      await save({
+        ...userInfo,
+        friendIds: userInfo?.friendIds ?
+        [ ...userInfo.friendIds, data.user.id]:
+        [ data.user.id]
+      })
+    }
   }
+
+  useEffect(() => {
+  
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      const data = notification.request.content.data;
+      handleNotification(data)
+    });
+    
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      const data = response.notification.request.content.data
+      handleNotification(data)
+    });
+
+    // scheduleLocalNotificationAsync();
+  
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);  
+  
+  return (
+    <CustomWebView uri={'home'} />
+    )
+}

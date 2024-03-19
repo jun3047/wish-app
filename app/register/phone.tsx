@@ -4,6 +4,7 @@ import { Pressable, Text } from 'react-native';
 import styled from '@emotion/native'
 import { useRecoilState } from 'recoil';
 import { userState } from '../../store/recoilState';
+import sendMessage from '../../api/sendAuthMsg';
 
 export default () => {
 
@@ -14,6 +15,8 @@ export default () => {
         const regExp = /^010\d{4}\d{4}$/;
         return regExp.test(phone);
     }
+
+    const getRandomSixNumber = () => Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
 
     return (
         <RegisterWarpper>
@@ -26,7 +29,9 @@ export default () => {
                 <Pressable 
                         onPress={()=>{
                             if (!isPhone(phone)) return;
-                            setUserInfo({phone, ...userInfo})
+                            const auth = getRandomSixNumber();
+                            sendMessage(phone, auth)
+                            setUserInfo({...userInfo, phone: `${phone}+${auth}`})
                             router.push('/register/auth')
                         }}
                         style={{paddingTop: 20, width: '100%', height: '100%'}}
