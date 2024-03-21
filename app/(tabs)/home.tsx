@@ -4,7 +4,8 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { scheduleLocalNotificationAsync, sendPushNotification } from '../../hooks/usePushNotifications';
 import useAsyncStorage from '../../hooks/useAsyncStorage';
-import { ServerUserType, UserType } from '../../type/user';
+import { UserType } from '../../type/user';
+import { useUser } from '@realm/react';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -19,29 +20,18 @@ export default () => {
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
 
-  const {save} = useAsyncStorage<UserType>('userInfo')
-  const userInfo = useAsyncStorage<UserType>('userInfo').storedValue
+  const [userInfo, saveUserInfo] = useUser()
 
   const handleNotification = async (data: Record<string, any>) => {
 
-    if (data.type === 'req_friend') {
-      await save({
-        ...userInfo,
-        requestFriendInfos: 
-        userInfo?.requestFriendInfos ? 
-        [ ...userInfo.requestFriendInfos, data.user as ServerUserType]:
-        [ data.user as ServerUserType]
-      })
+    const newUesrInfo = {
+      ...userInfo,
+      age: userInfo.age += 10,
     }
 
-    if (data.type === 'be_friend') {
-      await save({
-        ...userInfo,
-        friendIds: userInfo?.friendIds ?
-        [ ...userInfo.friendIds, data.user.id]:
-        [ data.user.id]
-      })
-    }
+    alert(data.type)
+
+    saveUserInfo(newUesrInfo) 
   }
 
   useEffect(() => {

@@ -9,7 +9,7 @@ import { UserType } from '../type/user';
 
 const StackLayout = () => {
 
-    const { storedValue, save, load } = useAsyncStorage<UserType>('userInfo');
+    const [storedValue, save, load] = useAsyncStorage<UserType>('userInfo');
 
     useEffect(() => {
 

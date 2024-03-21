@@ -6,8 +6,9 @@ import useVibration from '../hooks/useVibration';
 import useContacts from '../hooks/useContacts';
 import useImagePicker from '../hooks/useImagePicker';
 import { router } from 'expo-router';
-import useAsyncStorage from '../hooks/useAsyncStorage';
 import { handleWebPush, sendPushNotification } from '../hooks/usePushNotifications';
+import useUser from '../hooks/useUser';
+import usePoll from '../hooks/usePoll';
   
 const CustomWebView = ({uri}) => {
 
@@ -15,26 +16,24 @@ const CustomWebView = ({uri}) => {
     const {contacts, getContacts} = useContacts();
     const {image, pickImage} = useImagePicker();
     
-    const webViewRef = useRef(null); // WebView ref 추가  ㄱr
-    const userInfo = useAsyncStorage('userInfo').storedValue
-    const saveUser = useAsyncStorage('userInfo').save
-    const pollInfo = useAsyncStorage('pollInfo').storedValue
-    const savePollInfo = useAsyncStorage('pollInfo').save
+    const [userInfo, saveUserInfo] = useUser()
+    const [pollInfo, savePollInfo] = usePoll()
+    const webViewRef = useRef(null);
 
-    console.log('userInfo', userInfo)
+    useEffect(() => {
+
+        if(!userInfo) return;
+
+        const type = "앱동기화"
+        const message = `${type}${JSON.stringify({userInfo, pollInfo})}`
+        webViewRef.current.postMessage(message);
+
+    }, [userInfo, pollInfo])
+
     
-    const _userInfo = JSON.stringify(userInfo).replace(/"/g, '\\"');
-    const _pollInfo = JSON.stringify(pollInfo).replace(/"/g, '\\"');
-    const injectedJavaScript = `
-      window.localStorage.setItem('userInfo', "${_userInfo}");
-      window.localStorage.setItem('pollInfo', "${_pollInfo}");
-      true; // note: this line is required to avoid a warning
-    `;
-
     const updateAppDate = async (data) => {
-
-        data.userInfo && saveUser(data.userInfo)
-        data.pollInfo && savePollInfo(data.pollInfo)
+        if(data.userInfo) saveUserInfo(data.userInfo)
+        if(data.pollInfo) savePollInfo(data.pollInfo)
     }
     
     const handleWebViewMessage = async (event) => {
@@ -47,22 +46,13 @@ const CustomWebView = ({uri}) => {
         if(data.includes('카메라')) return router.navigate(`/camera/${data.replace('카메라', '')}`)
         if(data.includes('알람')) return router.navigate(`/alarm/${data.replace('알람', '')}`)
 
-        switch(data) {
-            case '진동':
-                vibration()
-                break;
-            case '인스타':
-                shareInsta(image)
-                break;
-            case '연락처':
-                useContacts()
-                break;
-        }
-    };    
+        if(data.includes('진동')) return vibration()
+        if(data.includes('인스타')) return shareInsta(image)
+        if(data.includes('연락처')) return getContacts()
+    }; 
 
     const [loading, setLoading] = useState(true);
 
-    console.log(process.env.EXPO_PUBLIC_WEB_URL)
 
     return (
         <>
@@ -76,7 +66,7 @@ const CustomWebView = ({uri}) => {
             }}>
               <ActivityIndicator size="large" color="#ffffff" />
             </View>
-          )}    
+          )}
         <WebView
             ref={webViewRef}
             onLoadEnd={()=>setLoading(false)}
@@ -87,7 +77,6 @@ const CustomWebView = ({uri}) => {
             }}
             source={{ uri: `${process.env.EXPO_PUBLIC_WEB_URL}/${uri}` }}
             onMessage={handleWebViewMessage}
-            injectedJavaScript={injectedJavaScript}
         />
         </>
     );

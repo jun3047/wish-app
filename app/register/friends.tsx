@@ -9,22 +9,23 @@ import { userState } from '../../store/recoilState';
 import register from '../../api/register';
 import useAsyncStorage from '../../hooks/useAsyncStorage';
 import { registerForPushNotificationsAsync } from '../../hooks/usePushNotifications';
-import { ServerUserType } from '../../type/user';
+import { UserType } from '../../type/user';
+import useUser from '../../hooks/useUser';
 
 export default () => {
 
     const [userInfo, setUserInfo] = useRecoilState(userState);
-    const {save} = useAsyncStorage('userInfo')
+    const [user, save] = useUser()
 
-    const [recommendFriendList, setRecommendFriendList] = useState<ServerUserType[]|null>()
-    const [selectedFriendList, setSelectedFriendList] = useState<ServerUserType[]>([])
+    const [recommendFriendList, setRecommendFriendList] = useState<UserType[]|null>()
+    const [selectedFriendList, setSelectedFriendList] = useState<UserType[]>([])
 
     const registerUser = async () => {
 
         const token = await registerForPushNotificationsAsync()
-        const id = await register({...userInfo, token, requestFriendInfos: selectedFriendList})
+        const id = await register({...userInfo, token })
 
-        await save({ ...userInfo, token, id, friendIds: [], feedIds: []})
+        await save({ ...userInfo, token, id, friendIds: [], requestFriendIds: [], addFriendIds: [], feedIds: []})
 
         setUserInfo({
             ...userInfo,
@@ -87,9 +88,9 @@ const FriendBox = ({
     active,
     onPress
 }: {
-    item: ServerUserType;
+    item: UserType;
     active: boolean;
-    onPress: (id: ServerUserType)=>void;
+    onPress: (id: UserType)=>void;
 }) => {
 
     return (

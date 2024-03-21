@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
-import { ServerUserType } from '../type/user';
+import { UserType } from '../type/user';
+import { PollType } from '../type/poll';
 
 interface UserRegisterState {
   token: string;
@@ -9,7 +10,7 @@ interface UserRegisterState {
   gender: 'boy' | 'girl';
   school?: string;
   schoolLocation?: string;
-  requestFriendIds?: ServerUserType[];
+  requestFriendIds?: number[];
 }
 
 export const userState = atom<UserRegisterState>({
@@ -24,4 +25,14 @@ export const userState = atom<UserRegisterState>({
     schoolLocation: undefined,
     requestFriendIds: [],
   },
+});
+
+export const loaclUserInfoState = atom<UserType>({
+  key: 'userInfoState',
+  default: null,
+});
+
+export const loaclPollInfoState = atom<PollType>({
+  key: 'pollInfoState',
+  default: null,
 });

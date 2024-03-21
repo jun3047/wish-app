@@ -9,9 +9,7 @@ function useAsyncStorage<T>(key: string) {
     try {
       const value = await AsyncStorage.getItem(key);
       if (value !== null) {
-        console.log("load:", JSON.parse(value))
         setStoredValue(JSON.parse(value));
-
         return JSON.parse(value)
       }
     } catch (error) {
@@ -22,7 +20,6 @@ function useAsyncStorage<T>(key: string) {
   const save = async (value: T) => {
     try {
       const jsonValue = JSON.stringify(value);
-      console.log("save:", jsonValue)
       await AsyncStorage.setItem(key, jsonValue);
       setStoredValue(value);
     } catch (error) {
@@ -34,7 +31,7 @@ function useAsyncStorage<T>(key: string) {
     load();
   }, []);
 
-  return { storedValue, save, load };
+  return [storedValue, save, load] as const;
 }
 
 export default useAsyncStorage;
