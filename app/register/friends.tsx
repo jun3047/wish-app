@@ -3,14 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, Pressable, Text, View } from 'react-native';
 import styled from '@emotion/native';
 import * as Update from "expo-updates";
-import getRecommendFriends from '../../api/getRecommendFriends';
+import getRecommendFriends from '../../@api/getRecommendFriends';
 import { useRecoilState } from 'recoil';
-import { userState } from '../../store/recoilState';
-import register from '../../api/register';
-import useAsyncStorage from '../../hooks/useAsyncStorage';
-import { registerForPushNotificationsAsync } from '../../hooks/usePushNotifications';
-import { UserType } from '../../type/user';
-import useUser from '../../hooks/useUser';
+import { userState } from '../../@store/recoilState';
+import register from '../../@api/register';
+import useAsyncStorage from '../../@hooks/useAsyncStorage';
+import { registerForPushNotificationsAsync } from '../../@hooks/usePushNotifications';
+import { UserType } from '../../@type/user';
+import useUser from '../../@hooks/useUser';
 
 export default () => {
 
@@ -25,12 +25,23 @@ export default () => {
         const token = await registerForPushNotificationsAsync()
         const id = await register({...userInfo, token })
 
-        await save({ ...userInfo, token, id, friendIds: [], requestFriendIds: [], addFriendIds: [], feedIds: []})
+        await save({
+            ...userInfo,
+            token,
+            id,
+            friends: [],
+            requestFriends: [],
+            receivedFriends: [],
+            feedIds: [],
+            alarms: [],
+        })
 
         setUserInfo({
             ...userInfo,
             token,
         })
+
+        console.log('저장완료')
     };
 
     useEffect(()=>{

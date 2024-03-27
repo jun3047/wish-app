@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, Text } from 'react-native';
 import styled from '@emotion/native'
 import { useRecoilState } from 'recoil';
-import { userState } from '../../store/recoilState';
+import { userState } from '../../@store/recoilState';
 
 export default () => {
 
@@ -29,6 +29,7 @@ export default () => {
             />
             <RegisterButton active={isSixDigit(auth)}>
                 <Pressable onPress={()=>{
+
                     if(!isSixDigit(auth)) return
                     if(!isAuth(auth)) return alert('인증번호가 일치하지 않습니다.')
 

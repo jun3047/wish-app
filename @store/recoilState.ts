@@ -1,16 +1,15 @@
 import { atom } from 'recoil';
-import { UserType } from '../type/user';
-import { PollType } from '../type/poll';
+import { UserType } from '../@type/user';
+import { PollType } from '../@type/poll';
 
 interface UserRegisterState {
   token: string;
   name: string;
   age: number;
   phone: string;
-  gender: 'boy' | 'girl';
+  gender: '남자' | '여자';
   school?: string;
   schoolLocation?: string;
-  requestFriendIds?: number[];
 }
 
 export const userState = atom<UserRegisterState>({
@@ -20,10 +19,9 @@ export const userState = atom<UserRegisterState>({
     name: '',
     age: 0,
     phone: '',
-    gender: 'boy',
+    gender: '남자',
     school: undefined,
     schoolLocation: undefined,
-    requestFriendIds: [],
   },
 });
 

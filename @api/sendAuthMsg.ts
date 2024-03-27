@@ -12,6 +12,7 @@ function makeSignature() {
   const url = `https://sens.apigw.ntruss.com/sms/v2/services/${uri}/messages`;
 
   // HMAC SHA256 생성
+  
   const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, secretKey);
   hmac.update(method);
   hmac.update(space);

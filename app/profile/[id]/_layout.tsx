@@ -1,7 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router'
 import React from 'react';
-import useVibration from '../../../hooks/useVibration';
-import CustomWebView from '../../../components/CustomWebView';
+import useVibration from '../../../@hooks/useVibration';
+import CustomWebView from '../../../@components/CustomWebView';
 
 export default () => {
 

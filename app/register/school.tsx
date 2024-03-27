@@ -4,7 +4,7 @@ import { FlatList, NativeSyntheticEvent, Pressable, Text, TextInputChangeEventDa
 import styled from '@emotion/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRecoilState } from 'recoil';
-import { userState } from '../../store/recoilState';
+import { userState } from '../../@store/recoilState';
 import useSchoolData from '../data/School';
 
 export default () => {

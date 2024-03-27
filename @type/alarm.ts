@@ -1,7 +1,7 @@
-import { ServerUserType } from "./user";
+import { UserType } from "./user";
 
 export interface AlarmType {
     id: number;
     question: string;
-    asker: ServerUserType;
+    asker: UserType;
 }

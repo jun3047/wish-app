@@ -1,16 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import useImagePicker from '../../../hooks/useImagePicker';
+import useImagePicker from '../../../@hooks/useImagePicker';
 import styled from '@emotion/native';
-import { uploadImage } from '../../../api/uploadPic';
-import { shareInsta } from '../../../hooks/instaShare';
-import useCapture from '../../../hooks/useCaptrue';
+import { uploadImage } from '../../../@api/uploadPic';
+import { shareInsta } from '../../../@hooks/instaShare';
+import useCapture from '../../../@hooks/useCaptrue';
+import useUser from '../../../@hooks/useUser';
 
 export default function Page() {
 
   const { pickImage, image, isAutoSelect } = useImagePicker();
   const data = useLocalSearchParams().data as string;
+
+  const [user, setUser] = useUser()
 
   const {asker, writer, question} = JSON.parse(data);
 
@@ -30,14 +33,21 @@ export default function Page() {
 
     setLoading(true);
 
-    const id = await uploadImage(feedData)
+    const feedId = await uploadImage(feedData)
 
-    if(id === null) {
+    if(feedId === null) {
       setLoading(false);
       return alert('업로드에 실패했습니다. 다시 시도해주세요.');
     }
 
     // id는 쓴 글 목록에 저장 후에
+    setUser({
+      ...user,
+      feedIds: [
+        ...user.feedIds,
+        feedId
+      ]
+    })
 
     setLoading(false);
     setUploaded(true);

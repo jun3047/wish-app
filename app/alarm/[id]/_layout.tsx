@@ -1,9 +1,9 @@
 import { Stack, useLocalSearchParams } from 'expo-router'
 import React, { useRef, useState } from 'react';
 import styled from '@emotion/native';
-import useCapture from '../../../hooks/useCaptrue';
+import useCapture from '../../../@hooks/useCaptrue';
 import { View, Text, ActivityIndicator } from 'react-native';
-import { shareInsta } from '../../../hooks/instaShare';
+import { shareInsta } from '../../../@hooks/instaShare';
 
 export default () => {
 
@@ -54,30 +54,25 @@ export default () => {
   const FriendListContainer = ({ myName }) => {
 
     const FriendList = getRandomNames(myName)
-    console.log(FriendList)
+
+    const index = FriendList.indexOf(myName);
 
     return (
         <GridContainer>
             {FriendList.map((friendName, index) => (
-                    <>
                     <PollButton
-                        key={friendName}
+                        key={index}
                         name={friendName}
                         active={friendName === myName}
                     />
-                    {
-                        friendName === myName &&
-                        <Finger
-                            key={'f'+index}
-                            rotate={
-                            index === 0 ? -45 :
-                            index === 1 ? 55 :
-                            index === 2 ? -135 : 145
-                        }>👆</Finger>
-                    } 
-                    </>
                 )
             )}
+            <Finger
+                rotate={
+                index === 0 ? -45 :
+                index === 1 ? 55 :
+                index === 2 ? -135 : 145
+            }>👆</Finger>
         </GridContainer>
     )
   };

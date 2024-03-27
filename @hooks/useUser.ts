@@ -1,19 +1,18 @@
 import { useRecoilState } from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
-import { loaclPollInfoState } from '../store/recoilState';
-import { PollType } from '../type/poll';
+import { loaclUserInfoState } from '../@store/recoilState';
+import { UserType } from '../@type/user';
 
-export default function usePoll() {
+export default function useUser() {
 
-  const [poll, setPoll] = useRecoilState(loaclPollInfoState)
+  const [user, setUser] = useRecoilState(loaclUserInfoState)
 
   const load = async () => {
     try {
-      const value = await AsyncStorage.getItem('pollInfo');
+      const value = await AsyncStorage.getItem('userInfo');
       if (value !== null) {
-        console.log("load:", JSON.parse(value))
-        setPoll(JSON.parse(value));
+        setUser(JSON.parse(value));
 
         return JSON.parse(value)
       }
@@ -22,11 +21,11 @@ export default function usePoll() {
     }
   };
 
-  const save = async (value: PollType) => {
+  const save = async (value: UserType) => {
     try {
       const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem('pollInfo', jsonValue);
-      setPoll(value);
+      await AsyncStorage.setItem('userInfo', jsonValue);
+      setUser(value);
     } catch (error) {
       console.error('AsyncStorage Error: ', error);
     }
@@ -36,5 +35,5 @@ export default function usePoll() {
     load();
   }, []);
 
-  return [poll, save] as const;
+  return [user, save] as const;
 }

@@ -13,6 +13,14 @@
       "channel": "preview"
     },
     "production": {
+      "env": {
+        "EXPO_PUBLIC_API_URL":"https://tio23s18pj.execute-api.ap-northeast-2.amazonaws.com/dev",
+        "EXPO_PUBLIC_WEB_URL":"https://wish-react.vercel.app",
+        "EXPO_PUBLIC_PHONE":"01075601770",
+        "EXPO_PUBLIC_NAVER_SECRET_KEY":"yAnRTjBKmRrx7IF6d4FNYJ1XTstmvJaG3qwGbZCI",
+        "EXPO_PUBLIC_NAVER_ACCESS_KEY_ID":"0SjUYG4ZLywpnwSqRcVVr",
+        "EXPO_PUBLIC_SERVICE_ID":"ncp:sms:kr:311286785865:find"
+      },
       "channel": "production"
     }
   },

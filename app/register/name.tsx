@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, Text } from 'react-native';
 import styled from '@emotion/native'
 import { useRecoilState } from 'recoil';
-import { userState } from '../../store/recoilState';
+import { userState } from '../../@store/recoilState';
 
 export default () => {
 

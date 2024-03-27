@@ -1,13 +1,14 @@
 import axios from 'axios';
 import * as FileSystem from 'expo-file-system';
-import { FeedUserType } from '../type/user';
 import { useRecoilState } from 'recoil';
-import { userState } from '../store/recoilState';
+import { userState } from '../@store/recoilState';
+import { SimpleUserType } from '../@type/user';
+import { handleWebPush } from '../@hooks/usePushNotifications';
 
 export const uploadImage = async (body: {
     question: string;
-    asker: FeedUserType;
-    writer: FeedUserType;
+    asker: SimpleUserType;
+    writer: SimpleUserType;
     fileUrl: string;
 }) => {
 
@@ -38,7 +39,18 @@ export const uploadImage = async (body: {
     
         if (uploadResponse.status === 200) {
             console.log("Upload successful");
+    
+            handleWebPush([{
+                token: asker.token,
+                data: {
+                    title: `${writer.name}님이 내 질문에 대한 사진을 업로드 했어요`,
+                    body: `지금 피드에서 확인해봐요`,
+                    data: {writer}
+                }
+            }])
+
             return id;
+
         } else {
             console.error("Upload failed", uploadResponse);
             return null;

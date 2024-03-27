@@ -1,10 +1,10 @@
 import { Link, Stack, router } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
-import { Pressable, Text } from 'react-native';
+import { Alert, Pressable, Text } from 'react-native';
 import styled from '@emotion/native'
 import { useRecoilState } from 'recoil';
-import { userState } from '../../store/recoilState';
-import sendMessage from '../../api/sendAuthMsg';
+import { userState } from '../../@store/recoilState';
+import sendMessage from '../../@api/sendAuthMsg';
 
 export default () => {
 
@@ -18,6 +18,28 @@ export default () => {
 
     const getRandomSixNumber = () => Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
 
+    const createCheckButtonAlert = (number: string): Promise<boolean>  => {
+        return new Promise((resolve, reject) => {
+          Alert.alert(
+            `${number.slice(0,3)}-${number.slice(3,7)}-${number.slice(7,12)} \n 본인 번호가 맞습니까?`,
+            `추후 변경할 수 없습니다`,
+            [
+                {
+                  text: '아닙니다',
+                  onPress: () => resolve(false), // '아닙니다' 버튼을 누르면 false를 반환합니다.
+                  style: 'destructive',
+                },
+                {
+                text: '맞습니다',
+                onPress: () => resolve(true), // '맞습니다' 버튼을 누르면 true를 반환합니다.
+                },
+            ],
+            { cancelable: false } // Android에서 물리적 뒤로 가기 버튼을 사용한 취소를 방지합니다.
+          );
+        });
+      };      
+
+
     return (
         <RegisterWarpper>
             <Stack.Screen options={{title: ' '}} />
@@ -27,8 +49,17 @@ export default () => {
             />
             <RegisterButton active={isPhone(phone)}>
                 <Pressable 
-                        onPress={()=>{
+                        onPress={async ()=>{
                             if (!isPhone(phone)) return;
+
+                            // TODO: 인증번호 승인되면 열어줘야 함
+                            const res = await createCheckButtonAlert(phone)
+
+                            if (!res) return;
+                            setUserInfo({...userInfo, phone: phone})
+
+                            return router.push('/register/gender')
+
                             const auth = getRandomSixNumber();
                             sendMessage(phone, auth)
                             setUserInfo({...userInfo, phone: `${phone}+${auth}`})

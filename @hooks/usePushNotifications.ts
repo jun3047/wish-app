@@ -4,10 +4,6 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
 async function registerForPushNotificationsAsync() {
-  if (!Device.isDevice) {
-    console.log('Must use physical device for Push Notifications');
-    return;
-  }
 
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
@@ -18,6 +14,11 @@ async function registerForPushNotificationsAsync() {
 
   if (finalStatus !== 'granted') {
     console.log('Failed to get push token for push notification!');
+    return;
+  }
+
+  if (!Device.isDevice) {
+    console.log('Must use physical device for Push Notifications');
     return;
   }
 
@@ -35,17 +36,21 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 
-async function scheduleLocalNotificationAsync() {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "You've got mail! 📬",
-        body: 'Here is the notification body',
-        data: { data: 'goes here' },
-      },
-      trigger: { seconds: 10 },
-    });
-  }
+async function scheduleLocalNotificationAsync(content : {
+  title: string,
+  body: string,
+  data: { [key: string]: any }
+}) {
 
+  const POLL_GAP_SEC = 10;
+
+  alert('scheduleLocalNotificationAsync')
+
+  await Notifications.scheduleNotificationAsync({
+    content: content,
+    trigger: { seconds: POLL_GAP_SEC },
+  });
+}
 
   async function handleWebPush(
     pushs: {
@@ -61,6 +66,15 @@ async function scheduleLocalNotificationAsync() {
     pushs.forEach(async (push) => {
       await sendPushNotification(push.token, push.data);
     });
+  }
+
+  async function handleWebPushLocal(content :{
+        title: string,
+        body: string,
+        data: { [key: string]: any }
+    }) {
+
+    await scheduleLocalNotificationAsync(content);
   }
 
   
@@ -95,5 +109,6 @@ export {
     registerForPushNotificationsAsync, 
     scheduleLocalNotificationAsync, 
     sendPushNotification,
-    handleWebPush
+    handleWebPush,
+    handleWebPushLocal
 };

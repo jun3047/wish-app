@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { MutableRefObject, useState } from 'react';
 import * as Contacts from 'expo-contacts';
 
 interface Contact {
@@ -7,8 +7,9 @@ interface Contact {
   phone: string | undefined;
 }
 
-const useContacts = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
+const useContacts = (webViewRef: MutableRefObject<any>) => {
+
+  const [contacts, setContacts] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const getContacts = async () => {
@@ -21,14 +22,16 @@ const useContacts = () => {
         });
 
           if (data.length > 0) {
-              setContacts(data.map((contact) => ({
-                  id: contact.id,
-                  name: contact.name,
-                  phone: contact.phoneNumbers?.[0]?.number,
-              }) as Contact)
+              setContacts(data.map((contact) => (
+                contact.phoneNumbers?.[0]?.number
+              ))
               );
           }
       }
+
+      const message = `연락처${JSON.stringify(contacts)}`
+      webViewRef.current.postMessage(message);
+
     } finally {
       setLoading(false);
     }

@@ -4,13 +4,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Text, Pressable, TouchableOpacity } from 'react-native';
 import styled from '@emotion/native'
 import { useRecoilState } from 'recoil';
-import { userState } from '../../store/recoilState';
+import { userState } from '../../@store/recoilState';
 
 export default () => {
 
     const [userInfo, setUserInfo] = useRecoilState(userState);
 
-    const setGender = (gender: 'boy' | 'girl') => {
+    const setGender = (gender: '남자' | '여자') => {
         setUserInfo({
             ...userInfo,
             gender
@@ -31,10 +31,10 @@ export default () => {
 const GenderButton = ({
     setGender
 }:{
-    setGender: (gender: 'boy'|'girl')=> void
+    setGender: (gender: '남자'|'여자')=> void
 }) => {
 
-    const onPress = (gender: 'boy'|'girl') => {
+    const onPress = (gender: '남자'|'여자') => {
         router.push("/register/name")
         setGender(gender)
     }
@@ -42,16 +42,16 @@ const GenderButton = ({
     return (
         <>
         <RegisterButton>
-            <TouchableOpacity onPress={()=>onPress('boy')} style={{paddingTop: 20, width: '100%', height: '100%'}}>
+            <TouchableOpacity onPress={()=>onPress('남자')} style={{paddingTop: 20, width: '100%', height: '100%'}}>
             <Text style={{color: 'white', textAlignVertical: 'center', textAlign: 'center', fontWeight: '800', fontSize: 18,}}>
-                boy 🙋🏻‍♂️
+                남자 🙋🏻‍♂️
             </Text>
             </TouchableOpacity>
         </RegisterButton>
         <RegisterButton>
-            <TouchableOpacity onPress={()=>onPress('girl')} style={{paddingTop: 20, width: '100%', height: '100%'}}>
+            <TouchableOpacity onPress={()=>onPress('여자')} style={{paddingTop: 20, width: '100%', height: '100%'}}>
             <Text style={{color: 'white', textAlignVertical: 'center', textAlign: 'center', fontWeight: '800', fontSize: 18,}}>
-                girl 🙋🏻‍♀️
+                여자 🙋🏻‍♀️
             </Text>
             </TouchableOpacity>
         </RegisterButton>
