@@ -4,7 +4,14 @@
     "scheme": "acme",
     "icon": "./assets/icon.png",
     "ios": {
-      "bundleIdentifier": "com.delectatio.want"
+      "notification": {
+        "icon": "./assets/icon.png"
+      },
+      "bundleIdentifier": "com.delectatio.want",
+      "buildNumber": "3",
+      "splash": {
+        "image": "./assets/splash.png"
+      }
     },
     "web": {
       "bundler": "metro"
@@ -14,6 +21,7 @@
     ],
     "name": "wish-app",
     "slug": "wish-app",
+    "orientation": "portrait",
     "extra": {
       "router": {
         "origin": false
@@ -28,6 +36,10 @@
     "updates": {
       "url": "https://u.expo.dev/e9723cac-047f-45a8-b6e0-626f30f2e52f"
     },
-    "android": {}
+    "android": {
+      "splash": {
+        "image": "./assets/splash.png"
+      }
+    }
   }
 }

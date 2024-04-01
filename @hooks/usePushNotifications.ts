@@ -42,9 +42,7 @@ async function scheduleLocalNotificationAsync(content : {
   data: { [key: string]: any }
 }) {
 
-  const POLL_GAP_SEC = 10;
-
-  alert('scheduleLocalNotificationAsync')
+  const POLL_GAP_SEC = 1800;
 
   await Notifications.scheduleNotificationAsync({
     content: content,

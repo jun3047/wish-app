@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { SafeAreaView, Text, View } from 'react-native';
 import { RecoilRoot } from 'recoil';
 import useAsyncStorage from '../@hooks/useAsyncStorage';
-import { UserType } from '../@type/user';
+import { SimpleUserType, UserType } from '../@type/user';
 import * as Notifications from 'expo-notifications';
 import useUser from '../@hooks/useUser';
 import { scheduleLocalNotificationAsync } from '../@hooks/usePushNotifications';
@@ -28,27 +28,31 @@ const StackLayout = () => {
 
     const handleNotification = async (data: Record<string, any>) => {
 
+        const user = await load()
+
         if(data.pollInfo) savePollInfo(data.pollInfo)
         else if(data.req) {
-            const newReq = 
-                userInfo.requestFriends.length === 0 ? 
-                [data.req]:
-                [data.req, ...userInfo.requestFriends]
 
-            saveUserInfo({
-                ...userInfo,
-                requestFriends: newReq
+            const newReq =
+            !user?.receivedFriends?.length ?
+                [data.req]:
+                [data.req, ...user.receivedFriends]
+
+            await saveUserInfo({
+                ...user,
+                receivedFriends: newReq
             })
         }
         else if (data.beFriend) {
             const newFriend = 
-                userInfo.friends.length === 0 ? 
+                !user?.friends?.length ? 
                 [data.beFriend]:
-                [data.beFriend, ...userInfo.friends]
+                [data.beFriend, ...user.friends]
 
-            saveUserInfo({
-                ...userInfo,
-                friends: newFriend
+            await saveUserInfo({
+                ...user,
+                friends: newFriend,
+                requestFriends: user.requestFriends.filter((user: SimpleUserType) => user.id !== data.beFriend.id)
             })
         }
         else if(data.writer) {
@@ -56,18 +60,30 @@ const StackLayout = () => {
         }
         else if(data.alarm) {
             const newAlarm = 
-                userInfo.alarms.length === 0 ? 
+                !user?.alarms?.length ?
                 [data.alarm]:
-                [data.alarm, ...userInfo.alarms]
+                [data.alarm, ...user.alarms]
 
-            saveUserInfo({
-                ...userInfo,
+            await saveUserInfo({
+                ...user,
                 alarms: newAlarm
             })
         }
     }
 
     useEffect(() => {
+
+        const initIsLogin = async () => {
+
+            const _storedValue = await load()
+            const path = _storedValue?.id === undefined ? 'register/first' : 'home'
+            router.navigate(path)
+
+            SplashScreen.hideAsync();
+            return;
+        };
+
+        initIsLogin();
   
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
           const data = notification.request.content.data;
@@ -78,15 +94,6 @@ const StackLayout = () => {
           const data = response.notification.request.content.data
           handleNotification(data)
         });
-    
-
-        const initIsLogin = async () => {
-            const _storedValue = await load()
-            const path = _storedValue?.id === undefined ? 'register/first' : 'home'
-            router.navigate(path)
-            SplashScreen.hideAsync();
-            return;
-        };
 
         // scheduleLocalNotificationAsync({
         //     title: "1",
@@ -94,7 +101,6 @@ const StackLayout = () => {
         //     data: { type: 'local' }
         // })
 
-        initIsLogin();
       
         return () => {
           Notifications.removeNotificationSubscription(notificationListener.current);

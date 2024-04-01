@@ -21,7 +21,8 @@
         "EXPO_PUBLIC_NAVER_ACCESS_KEY_ID":"0SjUYG4ZLywpnwSqRcVVr",
         "EXPO_PUBLIC_SERVICE_ID":"ncp:sms:kr:311286785865:find"
       },
-      "channel": "production"
+      "channel": "production",
+      "autoIncrement": true
     }
   },
   "submit": {

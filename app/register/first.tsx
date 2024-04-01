@@ -18,7 +18,7 @@ export default () => {
                 <Pressable 
                     onPress={()=> {
                         console.log('click')
-                        router.replace('/register/age')
+                        router.navigate('/register/age')
                     }}
                     style={{paddingTop: 20, width: '100%', height: '100%'}}
                 >

@@ -21,7 +21,7 @@ export default function usePoll() {
     }
   };
 
-  const save = async (value: PollType) => {
+  const save = async (value: PollType | null) => {
     try {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem('pollInfo', jsonValue);

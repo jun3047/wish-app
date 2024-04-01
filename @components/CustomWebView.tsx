@@ -1,3 +1,4 @@
+import * as Notifications from 'expo-notifications';
 import React, { useEffect, useRef, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import WebView from 'react-native-webview';
@@ -9,6 +10,7 @@ import { router } from 'expo-router';
 import { handleWebPush, handleWebPushLocal } from '../@hooks/usePushNotifications';
 import useUser from '../@hooks/useUser';
 import usePoll from '../@hooks/usePoll';
+import AsyncStorage from '@react-native-async-storage/async-storage';
   
 const CustomWebView = ({uri}) => {
 
@@ -33,21 +35,40 @@ const CustomWebView = ({uri}) => {
     }, [userInfo, pollInfo])
     
     const updateAppDate = async (data) => {
+
         if(data.userInfo) saveUserInfo(data.userInfo)
         if(data.pollInfo) savePollInfo(data.pollInfo)
+    }
+
+    const signout = async () => {
+        saveUserInfo(null)
+        savePollInfo(null)
+
+        await AsyncStorage.removeItem('userInfo')
+        await AsyncStorage.removeItem('pollInfo')
+        
+        router.navigate('/register/first')
     }
     
     const handleWebViewMessage = async (event) => {
 
         const {data} = event.nativeEvent;
 
+        if(data.includes('초기화')) return signout()
         if(data.includes('앱동기화')) return await updateAppDate(JSON.parse(data.replace('앱동기화', '')))
+        if(data.includes('첫투표로컬푸시')) return await Notifications.scheduleNotificationAsync({
+            content: JSON.parse(data.replace('첫투표로컬푸시', '')),
+            trigger: { seconds: 1 },
+          });
         if(data.includes('로컬푸시')) return await handleWebPushLocal(JSON.parse(data.replace('로컬푸시', '')))
         if(data.includes('푸시')) return await handleWebPush(JSON.parse(data.replace('푸시', '')).pushs)
         if(data.includes('탭이동')) return router.navigate(`/${data.replace('탭이동', '')}`)
 
         if(data.includes('프로필이동')) return router.navigate(`/profile/${data.replace('프로필이동', '')}`)
-        if(data.includes('카메라')) return router.navigate(`/camera/${data.replace('카메라', '')}`)
+        if(data.includes('카메라')) {
+            const queryData = encodeURIComponent(data.replace('카메라', ''));
+            return router.navigate(`/camera/${queryData}`);
+        }          
         if(data.includes('알람')) return router.navigate(`/alarm/${data.replace('알람', '')}`)
 
         if(data.includes('진동')) return vibration()

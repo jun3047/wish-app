@@ -45,13 +45,17 @@ export default () => {
         <RegisterWarpper>
             <Stack.Screen options={{
                 title: '학교 추가',
-                headerRight: () => (
-                    <Pressable onPress={()=>onPress(selectedSchool)}>
-                        <Text style={{color: 'white'}} >
-                            {selectedSchool === null ? '건너뛰기' : '선택 완료'}
-                        </Text>
-                    </Pressable>
-                ),
+                headerRight: () => {
+
+                    return selectedSchool === null ? 
+                        <Pressable>
+                            <Text style={{color: 'white'}} >선택 중</Text>
+                        </Pressable>
+                        :
+                        <Pressable onPress={()=>onPress(selectedSchool)}>
+                            <Text style={{color: 'white'}} >선택 완료</Text>
+                        </Pressable>
+                },
             }} />
             <SearchBar
                 value={searchValue}

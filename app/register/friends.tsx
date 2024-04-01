@@ -1,21 +1,35 @@
-import { Link, Stack } from 'expo-router';
+import { Link, Stack, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import { Alert, FlatList, Pressable, Text, View } from 'react-native';
 import styled from '@emotion/native';
-import * as Update from "expo-updates";
 import getRecommendFriends from '../../@api/getRecommendFriends';
 import { useRecoilState } from 'recoil';
 import { userState } from '../../@store/recoilState';
 import register from '../../@api/register';
-import useAsyncStorage from '../../@hooks/useAsyncStorage';
 import { registerForPushNotificationsAsync } from '../../@hooks/usePushNotifications';
 import { UserType } from '../../@type/user';
 import useUser from '../../@hooks/useUser';
+import { useNavigation } from 'expo-router'
+import { CommonActions } from '@react-navigation/native'
+import pushApi from '../../@api/push';
+import makeUserSimple from '../../@util/makeUserSimple';
+import usePoll from '../../@hooks/usePoll';
+import useContacts from '../../@hooks/useContacts';
 
 export default () => {
 
+    const navigation = useNavigation();
+
+    const handleResetAction = () => {
+      navigation.dispatch(CommonActions.reset({
+        routes: [{key: "(tabs)", name: "(tabs)"}]
+      }))
+    }
+
     const [userInfo, setUserInfo] = useRecoilState(userState);
     const [user, save] = useUser()
+    const [poll, savePoll] = usePoll()
+    const { contacts, loading, getContacts} = useContacts()
 
     const [recommendFriendList, setRecommendFriendList] = useState<UserType[]|null>()
     const [selectedFriendList, setSelectedFriendList] = useState<UserType[]>([])
@@ -41,14 +55,20 @@ export default () => {
             token,
         })
 
-        console.log('저장완료')
+        savePoll({
+            question: null,
+            nextTime: ''
+        })
+
+        return {id, token}
     };
 
     useEffect(()=>{
 
         (async () => {
+
             const _recommendFriendList = await getRecommendFriends({
-                phoneList: ['01012341234', '01012341235', '01012341236'],
+                phoneList: contacts,
                 school: userInfo.school,
                 schoolLocation: userInfo.schoolLocation
             })
@@ -64,8 +84,35 @@ export default () => {
             title: '친구 추가',
             headerRight: () => (
                 <Pressable onPress={ async ()=> {
-                    await registerUser()
-                    await Update.reloadAsync()
+
+                    selectedFriendList.map((friend)=>{
+                        pushApi.reqFriend(
+                            makeUserSimple(user),
+                            friend.token
+                        )
+                    })
+
+                    const res = await new Promise((resolve, reject) => {
+                        Alert.alert(
+                        'WISH는 투표를 받아야 글을 쓸 수 있어요',
+                        '첫 번째 알림은 WISH 앱에서 보내줄게요',
+                        [
+                            {text: '좋아요', onPress: () => resolve(true)},
+                            {text: '취소', onPress: () => resolve(false), style: 'cancel'},
+                        ]
+                        )
+                    })
+
+                    if(!res) return
+                    
+                    const {id, token} = await registerUser()
+
+                    pushApi.poll(
+                        makeUserSimple({...user, id, token: undefined}),
+                        token,
+                        '최근에 찍은 가장 좋아하는 사진이 뭐야?'
+                    )
+                    handleResetAction()
                 }}>
                 <Text style={{color: 'white'}}>
                     {selectedFriendList.length === 0 ? '가입하기' : '선택 완료'}
@@ -73,7 +120,19 @@ export default () => {
                 </Pressable>
             ),
         }} />
-        <FlatList
+
+        {
+            !recommendFriendList?.length ?
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={{color: 'white', fontSize: 24, fontWeight: '800'}}>
+                와 우리학교 첫 유저입니다 🥳
+            </Text>
+            <Text style={{color: 'white', fontSize: 24, fontWeight: '800'}}>
+                친구들을 초대해보세요~!
+            </Text>
+            </View>
+            :
+            <FlatList
             style={{width: '100%'}}
             data={recommendFriendList}
             keyExtractor={(item, index) => index.toString()}
@@ -88,7 +147,8 @@ export default () => {
                     }}
                 />
             )}
-        />
+            />
+        }
         </RegisterWarpper>
     );
 }

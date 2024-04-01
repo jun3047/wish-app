@@ -21,8 +21,9 @@ export default function useUser() {
     }
   };
 
-  const save = async (value: UserType) => {
+  const save = async (value: UserType | null) => {
     try {
+      
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem('userInfo', jsonValue);
       setUser(value);
@@ -35,5 +36,5 @@ export default function useUser() {
     load();
   }, []);
 
-  return [user, save] as const;
+  return [user, save, load] as const;
 }

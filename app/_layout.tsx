@@ -5,7 +5,7 @@ import StackLayout from "./stackLayout";
 
     return (
         <RecoilRoot>
-        <StackLayout />
+          <StackLayout />
         </RecoilRoot>
     );
 }

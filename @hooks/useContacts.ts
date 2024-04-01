@@ -7,7 +7,7 @@ interface Contact {
   phone: string | undefined;
 }
 
-const useContacts = (webViewRef: MutableRefObject<any>) => {
+const useContacts = (webViewRef?: MutableRefObject<any>) => {
 
   const [contacts, setContacts] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);

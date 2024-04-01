@@ -1,7 +1,6 @@
-import { UserType } from "./user";
+import { SimpleUserType } from "./user";
 
 export interface AlarmType {
-    id: number;
     question: string;
-    asker: UserType;
+    asker: SimpleUserType;
 }

@@ -7,6 +7,7 @@ import { uploadImage } from '../../../@api/uploadPic';
 import { shareInsta } from '../../../@hooks/instaShare';
 import useCapture from '../../../@hooks/useCaptrue';
 import useUser from '../../../@hooks/useUser';
+import { handleWebPush } from '../../../@hooks/usePushNotifications';
 
 export default function Page() {
 
@@ -14,7 +15,6 @@ export default function Page() {
   const data = useLocalSearchParams().data as string;
 
   const [user, setUser] = useUser()
-
   const {asker, writer, question} = JSON.parse(data);
 
   const [loading, setLoading] = useState(false);
@@ -48,6 +48,25 @@ export default function Page() {
         feedId
       ]
     })
+
+    alert("글 목록" + JSON.stringify({
+      ...user,
+      feedIds: [
+        ...user.feedIds,
+        feedId
+      ]
+    }))
+
+    handleWebPush([{
+      token: asker.token,
+      data: {
+        title: `내 질문에 ${writer.name}님이 사진을 올렸어요`,
+        body: '지금 피드에서 확인해보세요!',
+        data: {
+          feedId: feedId
+        }
+      }
+    }])
 
     setLoading(false);
     setUploaded(true);
