@@ -32,10 +32,8 @@ export default async function register({
         schoolLocation,
     });
     
+    // TODO: 가입시에 저장해서 보내도록 해야함
     // requestFriendIds.forEach(async (id) => {
-
-    //     id
-
     //     await sendPushNotification(friend.token, {
     //         title: "새로운 친구 요청",
     //         body: "지금 확인해보세요",

@@ -6,8 +6,8 @@ import useAsyncStorage from '../@hooks/useAsyncStorage';
 import { SimpleUserType, UserType } from '../@type/user';
 import * as Notifications from 'expo-notifications';
 import useUser from '../@hooks/useUser';
-import { scheduleLocalNotificationAsync } from '../@hooks/usePushNotifications';
 import usePoll from '../@hooks/usePoll';
+import useGrant from '../@hooks/useGrant';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,6 +25,7 @@ const StackLayout = () => {
     const [storedValue, save, load] = useAsyncStorage<UserType>('userInfo');
     const [userInfo, saveUserInfo] = useUser()
     const [pollInfo, savePollInfo] = usePoll()
+    const [alarmGrant, changeAlarmGrant] = useGrant()
 
     const handleNotification = async (data: Record<string, any>) => {
 
@@ -71,19 +72,30 @@ const StackLayout = () => {
         }
     }
 
+    const initPush = () => {
+        Notifications.setNotificationHandler({
+            handleNotification: async () => ({
+              shouldShowAlert: alarmGrant,
+              shouldPlaySound: alarmGrant,
+              shouldSetBadge: false,
+            }),
+        });
+    }
+
+    const initIsLogin = async () => {
+
+        const _storedValue = await load()
+        const path = _storedValue?.id === undefined ? 'register/first' : 'home'
+        router.navigate(path)
+
+        SplashScreen.hideAsync();
+        return;
+    };
+
     useEffect(() => {
 
-        const initIsLogin = async () => {
-
-            const _storedValue = await load()
-            const path = _storedValue?.id === undefined ? 'register/first' : 'home'
-            router.navigate(path)
-
-            SplashScreen.hideAsync();
-            return;
-        };
-
         initIsLogin();
+        initPush();
   
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
           const data = notification.request.content.data;
@@ -94,13 +106,6 @@ const StackLayout = () => {
           const data = response.notification.request.content.data
           handleNotification(data)
         });
-
-        // scheduleLocalNotificationAsync({
-        //     title: "1",
-        //     body: "2",
-        //     data: { type: 'local' }
-        // })
-
       
         return () => {
           Notifications.removeNotificationSubscription(notificationListener.current);

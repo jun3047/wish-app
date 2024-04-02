@@ -12,7 +12,7 @@ const useImagePicker = () => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
 
     if (status !== 'granted') {
-      alert('Sorry, we need camera roll permissions to make this work!');
+      alert('사진을 올리기 위해서는 권한이 필요해요');
       return;
     }
 

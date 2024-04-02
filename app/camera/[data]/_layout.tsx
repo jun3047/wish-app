@@ -40,7 +40,6 @@ export default function Page() {
       return alert('업로드에 실패했습니다. 다시 시도해주세요.');
     }
 
-    // id는 쓴 글 목록에 저장 후에
     setUser({
       ...user,
       feedIds: [
@@ -48,14 +47,6 @@ export default function Page() {
         feedId
       ]
     })
-
-    alert("글 목록" + JSON.stringify({
-      ...user,
-      feedIds: [
-        ...user.feedIds,
-        feedId
-      ]
-    }))
 
     handleWebPush([{
       token: asker.token,

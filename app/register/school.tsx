@@ -53,7 +53,7 @@ export default () => {
                         </Pressable>
                         :
                         <Pressable onPress={()=>onPress(selectedSchool)}>
-                            <Text style={{color: 'white'}} >선택 완료</Text>
+                            <Text style={{color: 'white', width: '100%', height: '100%'}} >선택 완료</Text>
                         </Pressable>
                 },
             }} />

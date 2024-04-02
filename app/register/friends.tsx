@@ -1,6 +1,6 @@
 import { Link, Stack, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Pressable, Text, View } from 'react-native';
 import styled from '@emotion/native';
 import getRecommendFriends from '../../@api/getRecommendFriends';
 import { useRecoilState } from 'recoil';
@@ -30,9 +30,11 @@ export default () => {
     const [user, save] = useUser()
     const [poll, savePoll] = usePoll()
     const { contacts, loading, getContacts} = useContacts()
-
+    
     const [recommendFriendList, setRecommendFriendList] = useState<UserType[]|null>()
     const [selectedFriendList, setSelectedFriendList] = useState<UserType[]>([])
+    const [registering, setRegistering] = useState(false)
+    const [friendLoading, setFriendLoading] = useState(true)
 
     const registerUser = async () => {
 
@@ -73,6 +75,7 @@ export default () => {
                 schoolLocation: userInfo.schoolLocation
             })
             setRecommendFriendList(_recommendFriendList)
+            setFriendLoading(false)
 
         })()
             
@@ -83,14 +86,10 @@ export default () => {
         <Stack.Screen options={{
             title: '친구 추가',
             headerRight: () => (
+                registering ? 
+                <ActivityIndicator color="white" />
+                :
                 <Pressable onPress={ async ()=> {
-
-                    selectedFriendList.map((friend)=>{
-                        pushApi.reqFriend(
-                            makeUserSimple(user),
-                            friend.token
-                        )
-                    })
 
                     const res = await new Promise((resolve, reject) => {
                         Alert.alert(
@@ -104,8 +103,16 @@ export default () => {
                     })
 
                     if(!res) return
-                    
+
+                    setRegistering(true)
                     const {id, token} = await registerUser()
+
+                    selectedFriendList.map((friend)=>{
+                        pushApi.reqFriend(
+                            makeUserSimple({...user, id, token}),
+                            friend.token
+                        )
+                    })
 
                     pushApi.poll(
                         makeUserSimple({...user, id, token: undefined}),
@@ -113,6 +120,7 @@ export default () => {
                         '최근에 찍은 가장 좋아하는 사진이 뭐야?'
                     )
                     handleResetAction()
+                    setRegistering(false)
                 }}>
                 <Text style={{color: 'white'}}>
                     {selectedFriendList.length === 0 ? '가입하기' : '선택 완료'}
@@ -122,6 +130,13 @@ export default () => {
         }} />
 
         {
+            friendLoading ? 
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <ActivityIndicator size='large' color="white" />
+            </View>
+            
+            :
+
             !recommendFriendList?.length ?
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text style={{color: 'white', fontSize: 24, fontWeight: '800'}}>
@@ -131,7 +146,9 @@ export default () => {
                 친구들을 초대해보세요~!
             </Text>
             </View>
+
             :
+
             <FlatList
             style={{width: '100%'}}
             data={recommendFriendList}

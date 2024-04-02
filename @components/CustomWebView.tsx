@@ -2,15 +2,17 @@ import * as Notifications from 'expo-notifications';
 import React, { useEffect, useRef, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import WebView from 'react-native-webview';
-import { shareInsta } from '../@hooks/instaShare';
+import { openInstagramProfile, shareInsta } from '../@hooks/instaShare';
 import useVibration from '../@hooks/useVibration';
 import useContacts from '../@hooks/useContacts';
 import useImagePicker from '../@hooks/useImagePicker';
-import { router } from 'expo-router';
+import { CommonActions } from '@react-navigation/native'
+import { router, useNavigation } from 'expo-router';
 import { handleWebPush, handleWebPushLocal } from '../@hooks/usePushNotifications';
 import useUser from '../@hooks/useUser';
 import usePoll from '../@hooks/usePoll';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useGrant from '../@hooks/useGrant';
   
 const CustomWebView = ({uri}) => {
 
@@ -19,9 +21,12 @@ const CustomWebView = ({uri}) => {
     const vibration = useVibration();
     const {contacts, getContacts} = useContacts(webViewRef);
     const {image, pickImage} = useImagePicker();
+
+    const navigation = useNavigation();
     
     const [userInfo, saveUserInfo] = useUser()
     const [pollInfo, savePollInfo] = usePoll()
+    const [alarmGrant, changeAlarmGrant] = useGrant()
 
     useEffect(() => {
 
@@ -46,14 +51,19 @@ const CustomWebView = ({uri}) => {
 
         await AsyncStorage.removeItem('userInfo')
         await AsyncStorage.removeItem('pollInfo')
+        await AsyncStorage.removeItem('grant')
         
-        router.navigate('/register/first')
+        navigation.dispatch(CommonActions.reset({
+            routes: [{key: "register/first", name: "register/first"}]
+        }))
     }
     
     const handleWebViewMessage = async (event) => {
 
         const {data} = event.nativeEvent;
 
+        if(data.includes('인스타프로필')) return openInstagramProfile(data.replace('인스타프로필', ''))
+        if(data.includes('알람권한변경')) return changeAlarmGrant()
         if(data.includes('초기화')) return signout()
         if(data.includes('앱동기화')) return await updateAppDate(JSON.parse(data.replace('앱동기화', '')))
         if(data.includes('첫투표로컬푸시')) return await Notifications.scheduleNotificationAsync({
@@ -105,6 +115,7 @@ const CustomWebView = ({uri}) => {
             injectedJavaScript={`
                 window.localStorage.setItem('userInfo', "${JSON.stringify(userInfo).replace(/"/g, '\\"')}");
                 window.localStorage.setItem('pollInfo', "${JSON.stringify(pollInfo).replace(/"/g, '\\"')}");
+                window.localStorage.setItem('grant', "${JSON.stringify({alarm: alarmGrant}).replace(/"/g, '\\"')}");
                 true; // note: this line is required to avoid a warning
             `}
         />
