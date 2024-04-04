@@ -8,9 +8,14 @@
         "icon": "./assets/icon.png"
       },
       "bundleIdentifier": "com.delectatio.want",
-      "buildNumber": "5",
+      "buildNumber": "6",
       "splash": {
         "image": "./assets/splash.png"
+      },
+      "infoPlist": {
+        "NSContactsUsageDescription": "연락처에 있는 번호를 찾기 위해서 연락처를 권한을 허락해주세요.",
+        "NSCameraUsageDescription": "글에 올릴 사진을 선택하기 위해, 카메라 권한을 허락해 주세요. 절대 선택하지 않은 사진을 사용하지 않습니다.",
+        "NSPhotoLibraryUsageDescription": "글에 올릴 사진을 선택하기 위해, 갤러리 권한을 허락해 주세요. 절대 선택하지 않은 사진을 사용하지 않습니다."
       }
     },
     "web": {

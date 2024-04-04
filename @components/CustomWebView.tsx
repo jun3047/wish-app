@@ -13,7 +13,7 @@ import useUser from '../@hooks/useUser';
 import usePoll from '../@hooks/usePoll';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useGrant from '../@hooks/useGrant';
-  
+
 const CustomWebView = ({uri}) => {
 
     const webViewRef = useRef(null);
