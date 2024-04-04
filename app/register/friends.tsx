@@ -39,7 +39,9 @@ export default () => {
     const registerUser = async () => {
 
         const token = await registerForPushNotificationsAsync()
+        alert('registerForPushNotificationsAsync 끝' + token)
         const id = await register({...userInfo, token })
+        alert('register 끝' + id)
 
         await save({
             ...userInfo,
@@ -100,6 +102,16 @@ export default () => {
                     setRegistering(true)
                     const {id, token} = await registerUser()
 
+                    alert('pushApi.poll(')
+
+                    pushApi.poll(
+                        makeUserSimple({...user, id, token: undefined}),
+                        token,
+                        '최근에 찍은 가장 좋아하는 사진이 뭐야?'
+                    )
+
+                    alert('selectedFriendList.map')
+                    
                     selectedFriendList.map((friend)=>{
                         pushApi.reqFriend(
                             makeUserSimple({...user, id, token}),
@@ -107,12 +119,10 @@ export default () => {
                         )
                     })
 
-                    pushApi.poll(
-                        makeUserSimple({...user, id, token: undefined}),
-                        token,
-                        '최근에 찍은 가장 좋아하는 사진이 뭐야?'
-                    )
+                    alert('setRegistering(false)')
                     setRegistering(false)
+
+                    alert('handleResetAction()')
                     handleResetAction()
                 }}>
                 <Text style={{color: 'white'}}>
