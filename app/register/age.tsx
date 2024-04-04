@@ -12,14 +12,20 @@ export default () => {
     const [userInfo, setUserInfo] = useRecoilState(userState);
     const [age, setAge] = useState<number | null>(null)
 
+
+    const ageCheck = (_age: number) => {
+        return !(_age === null || isNaN(_age) || _age.toString().startsWith('0') || _age < 14);
+    }
+
     return (
         <RegisterWarpper>
             <Stack.Screen options={{title: ' '}} />
             <Form setValue={setAge} />
-            <RegisterButton active={!(age === null || isNaN(age))}>
+            <AuthText>WISH는 만 14세 이상부터 희원가입이 가능합니다</AuthText>
+            <RegisterButton active={ageCheck(age)}>
                 <Pressable 
                     onPress={()=>{
-                        if (age === null || isNaN(age)) return;
+                        if (!ageCheck(age)) return;
                         setUserInfo({...userInfo, age})
                         router.push('/register/phone')
                     }}
@@ -111,4 +117,16 @@ const RegisterButton = styled.View<{active: boolean}>`
     ${props=>!props.active && `
         opacity: 0.5;
     `}
+`
+
+const AuthText = styled.Text`
+    position: absolute;
+
+    bottom: 62%;
+    font-size: 13px;
+    color: #646464;
+    width: 100%;
+    text-align: center;
+    font-weight: 800;
+    margin-bottom: 20px;
 `

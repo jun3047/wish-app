@@ -34,6 +34,7 @@ export default () => {
                 name={name}
                 setName={setName}
             />
+            <AuthText>이름은 다른 사용자에게 표시됩니다.</AuthText>
             <RegisterButton active={isName(name)}>
                 <Pressable onPress={()=>{onPress(name)}}
                     style={{paddingTop: 20, width: '100%', height: '100%'}}
@@ -125,4 +126,16 @@ const RegisterButton = styled.View<{active: boolean}>`
     ${props => props.active || `
         opacity: 0.5;
     `}
+`
+
+const AuthText = styled.Text`
+    position: absolute;
+
+    bottom: 62%;
+    font-size: 13px;
+    color: #646464;
+    width: 100%;
+    text-align: center;
+    font-weight: 800;
+    margin-bottom: 20px;
 `

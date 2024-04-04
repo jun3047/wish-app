@@ -47,6 +47,7 @@ export default () => {
                 phone={ phone }
                 setPhone={ setPhone }
             />
+            <AuthText>WISH는 개인정보를 안전하게 관리합니다. 유저의 연락처는 서버로 안전하게 전송되면, 친구를 추천해주는데만 사용되며, 절대로 동의없는 광고나 스팸 문자를 보내지 않습니다.</AuthText>
             <RegisterButton active={isPhone(phone)}>
                 <Pressable 
                         onPress={async ()=>{
@@ -102,7 +103,9 @@ const Form = ({
             }}
             placeholder='01012345678'
             ref={inputRef}
-            keyboardType='number-pad' />
+            keyboardType='number-pad'
+            defaultValue='010'
+        />
         </>
     )
 }
@@ -153,4 +156,16 @@ const RegisterButton = styled.View<{active: boolean}>`
     ${props=>!props.active && `
         opacity: 0.5;
     `}
+`
+
+const AuthText = styled.Text`
+    position: absolute;
+
+    bottom: 62%;
+    font-size: 13px;
+    color: #646464;
+    width: 100%;
+    text-align: center;
+    font-weight: 800;
+    margin-bottom: 20px;
 `

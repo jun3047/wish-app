@@ -24,6 +24,7 @@ export default () => {
             <GenderButton
                 setGender={setGender}
             />
+            <AuthText>성별은 다른이에게 익명으로 알림이 보낼 때, 최소한으로 제공되는 정보 이외로는 활용되지 않습니다. 응답은 선택사항입니다.</AuthText>
         </RegisterWarpper>
     );
 }
@@ -55,9 +56,28 @@ const GenderButton = ({
             </Text>
             </TouchableOpacity>
         </RegisterButton>
+        <RegisterButton>
+            <TouchableOpacity onPress={()=>onPress('여자')} style={{paddingTop: 20, width: '100%', height: '100%'}}>
+            <Text style={{color: 'white', textAlignVertical: 'center', textAlign: 'center', fontWeight: '800', fontSize: 18,}}>
+                응답하지 않음 🤷🏻‍♂️
+            </Text>
+            </TouchableOpacity>
+        </RegisterButton>
         </>
     )
 }
+
+const AuthText = styled.Text`
+    position: absolute;
+
+    bottom: 10%;
+    font-size: 13px;
+    color: #646464;
+    width: 100%;
+    text-align: center;
+    font-weight: 800;
+    margin-bottom: 20px;
+`
 
 const RegisterWarpper = styled.View`
     flex: 1;
