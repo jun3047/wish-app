@@ -86,7 +86,7 @@ const StackLayout = () => {
 
         const _storedValue = await load()
         const path = _storedValue?.id === undefined ? 'register/first' : 'home'
-        router.navigate(path)
+        router.replace(path)
 
         SplashScreen.hideAsync();
         return;

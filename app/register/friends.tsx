@@ -51,16 +51,9 @@ export default () => {
             feedIds: [],
             alarms: [],
         })
-
-        setUserInfo({
-            ...userInfo,
-            token,
-        })
-
-        savePoll({
-            question: null,
-            nextTime: ''
-        })
+        
+        setUserInfo({ ...userInfo, token, })
+        savePoll({ question: null, nextTime: '' })
 
         return {id, token}
     };
@@ -119,8 +112,8 @@ export default () => {
                         token,
                         '최근에 찍은 가장 좋아하는 사진이 뭐야?'
                     )
-                    handleResetAction()
                     setRegistering(false)
+                    handleResetAction()
                 }}>
                 <Text style={{color: 'white'}}>
                     {selectedFriendList.length === 0 ? '가입하기' : '선택 완료'}
