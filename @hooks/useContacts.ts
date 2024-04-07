@@ -14,6 +14,8 @@ const useContacts = (webViewRef?: MutableRefObject<any>) => {
 
   const getContacts = async () => {
     setLoading(true);
+
+    let newContacts = [];
     try {
       const { status } = await Contacts.requestPermissionsAsync();
       if (status === 'granted') {
@@ -22,15 +24,19 @@ const useContacts = (webViewRef?: MutableRefObject<any>) => {
         });
 
           if (data.length > 0) {
-              setContacts(data.map((contact) => (
-                contact.phoneNumbers?.[0]?.number
+              newContacts = data.map((contact) => (
+                  contact.phoneNumbers?.[0]?.number
               ))
-              );
           }
       }
 
-      const message = `연락처${JSON.stringify(contacts)}`
-      webViewRef.current.postMessage(message);
+      setContacts(newContacts);
+
+      return newContacts;
+
+      // const message = `연락처${JSON.stringify(contacts)}`
+      // webViewRef.current.postMessage(message);
+
 
     } finally {
       setLoading(false);

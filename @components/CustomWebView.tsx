@@ -19,7 +19,7 @@ const CustomWebView = ({uri}) => {
     const webViewRef = useRef(null);
 
     const vibration = useVibration();
-    const {contacts, getContacts} = useContacts(webViewRef);
+    // const {contacts, getContacts} = useContacts(webViewRef);
     const {image, pickImage} = useImagePicker();
 
     const navigation = useNavigation();
@@ -83,7 +83,7 @@ const CustomWebView = ({uri}) => {
 
         if(data.includes('진동')) return vibration()
         if(data.includes('인스타')) return shareInsta(image)
-        if(data.includes('연락처')) return getContacts()
+        // if(data.includes('연락처')) return getContacts()
     };
 
     const [loading, setLoading] = useState(true);

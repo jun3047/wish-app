@@ -29,7 +29,7 @@ export default () => {
     const [userInfo, setUserInfo] = useRecoilState(userState);
     const [user, save] = useUser()
     const [poll, savePoll] = usePoll()
-    const { contacts, loading, getContacts} = useContacts()
+    // const { getContacts} = useContacts()
     
     const [recommendFriendList, setRecommendFriendList] = useState<UserType[]|null>()
     const [selectedFriendList, setSelectedFriendList] = useState<UserType[]>([])
@@ -64,8 +64,10 @@ export default () => {
 
         (async () => {
 
+            // const contacts = await getContacts()
+
             const _recommendFriendList = await getRecommendFriends({
-                phoneList: contacts,
+                phoneList: [],
                 school: userInfo.school,
                 schoolLocation: userInfo.schoolLocation
             })
