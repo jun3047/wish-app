@@ -8,7 +8,7 @@
         "icon": "./assets/icon.png"
       },
       "bundleIdentifier": "com.delectatio.want",
-      "buildNumber": "9",
+      "buildNumber": "15",
       "splash": {
         "image": "./assets/splash.png"
       },
@@ -25,14 +25,14 @@
       "expo-router"
     ],
     "name": "WISH",
-    "slug": "wish-app",
+    "slug": "wish",
     "orientation": "portrait",
     "extra": {
       "router": {
         "origin": false
       },
       "eas": {
-        "projectId": "e9723cac-047f-45a8-b6e0-626f30f2e52f"
+        "projectId": "227e7f0f-c7a9-4728-9859-e1372ee161fe"
       }
     },
     "runtimeVersion": {
@@ -45,6 +45,7 @@
       "splash": {
         "image": "./assets/splash.png"
       }
-    }
+    },
+    "owner": "delectatio.jun"
   }
 }

@@ -6,8 +6,11 @@ import { Platform } from 'react-native';
 async function registerForPushNotificationsAsync() {
 
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
+
   let finalStatus = existingStatus;
+
   if (existingStatus !== 'granted') {
+
     const { status } = await Notifications.requestPermissionsAsync();
     finalStatus = status;
   }
@@ -22,7 +25,8 @@ async function registerForPushNotificationsAsync() {
     return;
   }
 
-  const token = (await Notifications.getExpoPushTokenAsync({ projectId: Constants.expo })).data;
+  // 현재 이부분이 문제
+  const token = (await Notifications.getExpoPushTokenAsync()).data;
 
   if (Platform.OS === 'android') {
     Notifications.setNotificationChannelAsync('default', {
