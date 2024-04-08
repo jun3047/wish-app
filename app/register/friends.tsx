@@ -7,7 +7,7 @@ import { useRecoilState } from 'recoil';
 import { userState } from '../../@store/recoilState';
 import register from '../../@api/register';
 import { registerForPushNotificationsAsync } from '../../@hooks/usePushNotifications';
-import { UserType } from '../../@type/user';
+import { SimpleUserType, UserType } from '../../@type/user';
 import useUser from '../../@hooks/useUser';
 import { useNavigation } from 'expo-router'
 import { CommonActions } from '@react-navigation/native'
@@ -15,6 +15,7 @@ import pushApi from '../../@api/push';
 import makeUserSimple from '../../@util/makeUserSimple';
 import usePoll from '../../@hooks/usePoll';
 import useContacts from '../../@hooks/useContacts';
+import friendApi from '../../@api/friend';
 
 export default () => {
 
@@ -39,9 +40,7 @@ export default () => {
     const registerUser = async () => {
 
         const token = await registerForPushNotificationsAsync()
-        alert('registerForPushNotificationsAsync 끝' + token)
         const id = await register({...userInfo, token })
-        alert('register 끝' + id)
 
         await save({
             ...userInfo,
@@ -59,6 +58,20 @@ export default () => {
 
         return {id, token}
     };
+
+
+    const beFriend = async (targetUser: SimpleUserType) => {
+        friendApi.beFriend(makeUserSimple(user), targetUser)
+        pushApi.reciveFriend(user, targetUser.token)
+    
+        save({
+            ...user,
+            friends: !user?.friends?.length ?
+            [targetUser]:
+            [...user.friends, targetUser],
+            receivedFriends: []
+        })
+      }
 
     useEffect(()=>{
 
@@ -115,10 +128,12 @@ export default () => {
                     alert('selectedFriendList.map')
                     
                     selectedFriendList.map((friend)=>{
-                        pushApi.reqFriend(
-                            makeUserSimple({...user, id, token}),
-                            friend.token
-                        )
+
+                        beFriend(friend)
+                        // pushApi.reqFriend(
+                        //     makeUserSimple({...user, id, token}),
+                        //     friend.token
+                        // )
                     })
 
                     alert('setRegistering(false)')
