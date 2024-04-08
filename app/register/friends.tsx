@@ -33,11 +33,11 @@ export default () => {
     // const { getContacts} = useContacts()
     
     const [recommendFriendList, setRecommendFriendList] = useState<UserType[]|null>()
-    const [selectedFriendList, setSelectedFriendList] = useState<UserType[]>([])
+    const [selectedFriendList, setSelectedFriendList] = useState<SimpleUserType[]>([])
     const [registering, setRegistering] = useState(false)
     const [friendLoading, setFriendLoading] = useState(true)
 
-    const registerUser = async () => {
+    const registerUser = async (selectedFriendList: SimpleUserType[]) => {
 
         const token = await registerForPushNotificationsAsync()
         const id = await register({...userInfo, token })
@@ -46,7 +46,7 @@ export default () => {
             ...userInfo,
             token,
             id,
-            friends: [],
+            friends: selectedFriendList,
             requestFriends: [],
             receivedFriends: [],
             feedIds: [],
@@ -60,17 +60,9 @@ export default () => {
     };
 
 
-    const beFriend = async (targetUser: SimpleUserType) => {
-        friendApi.beFriend(makeUserSimple(user), targetUser)
-        pushApi.reciveFriend(user, targetUser.token)
-    
-        save({
-            ...user,
-            friends: !user?.friends?.length ?
-            [targetUser]:
-            [...user.friends, targetUser],
-            receivedFriends: []
-        })
+    const beFriend = async (simpleUser: SimpleUserType, targetUser: SimpleUserType) => {
+        friendApi.beFriend(simpleUser, targetUser)
+        pushApi.reciveFriend(simpleUser, targetUser.token)
       }
 
     useEffect(()=>{
@@ -115,9 +107,12 @@ export default () => {
                     if(!res) return
 
                     setRegistering(true)
-                    const {id, token} = await registerUser()
+                    const {id, token} = await registerUser(selectedFriendList)
 
-                    alert('pushApi.poll(')
+                    const simpleUser = makeUserSimple({...user, id, token})
+                    selectedFriendList.map((friend)=>{
+                        beFriend(simpleUser, friend)
+                    })
 
                     pushApi.poll(
                         makeUserSimple({...user, id, token: undefined}),
@@ -125,21 +120,7 @@ export default () => {
                         '최근에 찍은 가장 좋아하는 사진이 뭐야?'
                     )
 
-                    alert('selectedFriendList.map')
-                    
-                    selectedFriendList.map((friend)=>{
-
-                        beFriend(friend)
-                        // pushApi.reqFriend(
-                        //     makeUserSimple({...user, id, token}),
-                        //     friend.token
-                        // )
-                    })
-
-                    alert('setRegistering(false)')
                     setRegistering(false)
-
-                    alert('handleResetAction()')
                     handleResetAction()
                 }}>
                 <Text style={{color: 'white'}}>

@@ -32,18 +32,18 @@ const StackLayout = () => {
         const user = await load()
 
         if(data.pollInfo) savePollInfo(data.pollInfo)
-        else if(data.req) {
+        // else if(data.req) {
 
-            const newReq =
-            !user?.receivedFriends?.length ?
-                [data.req]:
-                [data.req, ...user.receivedFriends]
+        //     const newReq =
+        //     !user?.receivedFriends?.length ?
+        //         [data.req]:
+        //         [data.req, ...user.receivedFriends]
 
-            await saveUserInfo({
-                ...user,
-                receivedFriends: newReq
-            })
-        }
+        //     await saveUserInfo({
+        //         ...user,
+        //         receivedFriends: newReq
+        //     })
+        // } 일방적인 친구 받기로 변경하면서 현재 사용하지 않음
         else if (data.beFriend) {
             const newFriend = 
                 !user?.friends?.length ? 
