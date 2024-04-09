@@ -8,12 +8,12 @@
         "icon": "./assets/icon.png"
       },
       "bundleIdentifier": "com.delectatio.want",
-      "buildNumber": "15",
+      "buildNumber": "3",
       "splash": {
         "image": "./assets/splash.png"
       },
       "infoPlist": {
-        "NSContactsUsageDescription": "연락처에 있는 번호를 찾기 위해서 연락처를 권한을 허락해주세요.",
+        "NSContactsUsageDescription": "연락처에 있는 유저를 찾기 위해서 연락처를 권한을 허락해주세요. 절대 연락처를 저장하지 않습니다.",
         "NSCameraUsageDescription": "글에 올릴 사진을 선택하기 위해, 카메라 권한을 허락해 주세요. 절대 선택하지 않은 사진을 사용하지 않습니다.",
         "NSPhotoLibraryUsageDescription": "글에 올릴 사진을 선택하기 위해, 갤러리 권한을 허락해 주세요. 절대 선택하지 않은 사진을 사용하지 않습니다."
       }
@@ -32,7 +32,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "227e7f0f-c7a9-4728-9859-e1372ee161fe"
+        "projectId": "bd39eaee-b2ab-44d7-9fa4-07b08addce95"
       }
     },
     "runtimeVersion": {
@@ -46,6 +46,6 @@
         "image": "./assets/splash.png"
       }
     },
-    "owner": "delectatio.jun"
+    "owner": "delectatio_jun"
   }
 }
