@@ -8,6 +8,7 @@ import * as Notifications from 'expo-notifications';
 import useUser from '../@hooks/useUser';
 import usePoll from '../@hooks/usePoll';
 import useGrant from '../@hooks/useGrant';
+import * as amplitude from '@amplitude/analytics-react-native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -64,6 +65,8 @@ const StackLayout = () => {
                 !user?.alarms?.length ?
                 [data.alarm]:
                 [data.alarm, ...user.alarms]
+
+            amplitude.track('view_reciveQ')
 
             await saveUserInfo({
                 ...user,
