@@ -1,13 +1,30 @@
-import { Tabs } from "expo-router";
+import { Tabs, usePathname } from "expo-router";
 import React, { useEffect } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import useVibration from "../../@hooks/useVibration";
-
+import * as amplitude from '@amplitude/analytics-react-native';
 
 export default () => {
 
     const virbrate = useVibration();
-    useEffect(() => virbrate());
+    const pathname = usePathname();
+
+    useEffect(() => {
+
+        let routeName = '';
+
+        if(pathname.includes('alarm/')) {
+            routeName = 'alarmDetail'
+        }else if(pathname.includes('camera/')) {
+            routeName = 'camera'
+        }else{
+            const route = pathname.split('/')[1]
+            routeName = route
+        }
+
+        amplitude.track(`view_${routeName}`)
+        virbrate()
+    });
 
     return (
         <Tabs screenOptions={{

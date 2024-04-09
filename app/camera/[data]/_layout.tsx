@@ -8,6 +8,7 @@ import { shareInsta } from '../../../@hooks/instaShare';
 import useCapture from '../../../@hooks/useCaptrue';
 import useUser from '../../../@hooks/useUser';
 import { handleWebPush } from '../../../@hooks/usePushNotifications';
+import * as amplitude from '@amplitude/analytics-react-native';
 
 export default function Page() {
 
@@ -89,6 +90,9 @@ export default function Page() {
           uploaded ? 
           <>
           <MainButton onPress={async ()=>{
+
+              const isSameGender = asker.gender === writer.gender
+              amplitude.track(`click_share-${ isSameGender ? 'same' : 'other'}`)
               const uri = await captureComponent()
               shareInsta(uri)
             }}>
