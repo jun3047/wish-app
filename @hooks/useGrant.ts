@@ -4,19 +4,21 @@ import * as Notifications from 'expo-notifications';
 
 export default function useGrant () {
 
-    const [alarmGrant, setAlarmGrant] = useState<boolean | null>(null);
+    const [alarmGrant, setAlarmGrant] = useState<boolean>(true);
 
     const load = async () => {
         try {
           const value = await AsyncStorage.getItem('grant');
-          if (value !== null) {
-            setAlarmGrant(JSON.parse(value).alarm);
-          }else {
+
+          if (value === null) {
             await AsyncStorage.setItem('grant', JSON.stringify({alarm: true}));
             setAlarmGrant(true);
+            return;
           }
-        } catch (error) {
 
+          setAlarmGrant(JSON.parse(value).alarm);
+          console.log('alarmGrant:', JSON.parse(value).alarm);
+        } catch (error) {
           console.error('AsyncStorage Error: ', error);
         }
       };
@@ -24,11 +26,11 @@ export default function useGrant () {
       const change = async () => {
         try {
             await AsyncStorage.setItem('grant', JSON.stringify({alarm: !alarmGrant}));
-            alert('푸시 알림이 ' + (alarmGrant ? '켜졌습니다' : '꺼졌습니다'));
+            alert('푸시 알림이 ' + (!alarmGrant ? '켜졌습니다' : '꺼졌습니다'));
             Notifications.setNotificationHandler({
                 handleNotification: async () => ({
-                shouldShowAlert: alarmGrant,
-                shouldPlaySound: alarmGrant,
+                shouldShowAlert: !alarmGrant,
+                shouldPlaySound: !alarmGrant,
                 shouldSetBadge: false,
                 }),
             });

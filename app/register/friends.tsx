@@ -16,6 +16,7 @@ import makeUserSimple from '../../@util/makeUserSimple';
 import usePoll from '../../@hooks/usePoll';
 import useContacts from '../../@hooks/useContacts';
 import friendApi from '../../@api/friend';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default () => {
 
@@ -52,6 +53,7 @@ export default () => {
             feedIds: [],
             alarms: [],
         })
+        await AsyncStorage.setItem('grant', JSON.stringify({alarm: true}));
         
         setUserInfo({ ...userInfo, token, })
         savePoll({ question: null, nextTime: '' })
