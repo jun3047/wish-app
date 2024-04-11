@@ -1,6 +1,6 @@
 import { Link, Stack, router } from 'expo-router';
 import React from 'react';
-import { Pressable, Text } from 'react-native';
+import { Linking, Pressable, Text } from 'react-native';
 import styled from '@emotion/native'
 
 export default () => {
@@ -25,7 +25,10 @@ export default () => {
                 <Text style={{color: 'black', textAlignVertical: 'center', textAlign: 'center', fontWeight: '800', fontSize: 18,}}>시작하기</Text>
                 </Pressable>
             </RegisterButton>
-            <RegisterTermsText>진행시 이용약관과 개인정보 처리방침에</RegisterTermsText>
+            <RegisterTermsText onPress={()=> {
+                Linking.openURL('https://jun3047.notion.site/WISH-f3b840b5dab64244ba6f5771c06ddcb4?pvs=4')
+            }}
+            >진행시 이용약관과 개인정보 처리방침에</RegisterTermsText>
             <RegisterTermsText>동의한 것으로 간주합니다.</RegisterTermsText>
         </RegisterWarpper>
     );
