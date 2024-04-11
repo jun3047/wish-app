@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import useImagePicker from '../../../@hooks/useImagePicker';
 import styled from '@emotion/native';
@@ -111,7 +111,20 @@ export default function Page() {
               <ButtonText>갤러리에서 고르기</ButtonText>
           </MainButton>:
           <>
-          <MainButton onPress={upload}>
+          <MainButton onPress={()=>{
+              Alert.alert('주의사항', 
+              '부적절하거나 불쾌감을 줄 수 있는 컨텐츠는 제재를 받을 수 있습니다', [
+                {
+                  text: '취소',
+                  onPress: ()=>{},
+                  style: 'cancel'
+                },
+                {
+                  text: '알겠습니다',
+                  onPress: ()=>upload()
+                }
+              ])
+            }}>
           <ButtonText>바로 올리기</ButtonText>
           </MainButton>
             <SubButton onPress={pickImage}>
