@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import React, { useEffect, useRef, useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Linking, Alert } from 'react-native';
 import WebView from 'react-native-webview';
 import { openInstagramProfile, shareInsta } from '../@hooks/instaShare';
 import useVibration from '../@hooks/useVibration';
@@ -45,6 +45,17 @@ const CustomWebView = ({uri}) => {
         if(data.pollInfo) savePollInfo(data.pollInfo)
     }
 
+    const goToWeb = async (url: string) => {
+    
+        Linking.openURL(url)
+            .catch((err) => Alert.alert(
+                '웹을 열 수 없습니다',
+                '다시 시도하거나 인스타에서 @wishappteam으로 문의해주세요',
+                [{ text: '알겠습니다.', onPress: () => console.log('OK Pressed') }],
+                { cancelable: false }
+            ));
+    }
+
     const signout = async () => {
         saveUserInfo(null)
         savePollInfo(null)
@@ -62,6 +73,7 @@ const CustomWebView = ({uri}) => {
 
         const {data} = event.nativeEvent;
 
+        if(data.includes('이용약관')) return goToWeb('https://jun3047.notion.site/WISH-f3b840b5dab64244ba6f5771c06ddcb4?pvs=4')
         if(data.includes('인스타프로필')) return openInstagramProfile(data.replace('인스타프로필', ''))
         if(data.includes('알람권한변경')) return changeAlarmGrant()
         if(data.includes('초기화')) return signout()
