@@ -39,7 +39,7 @@ const CustomWebView = ({uri}) => {
 
     }, [userInfo, pollInfo])
     
-    const updateAppDate = async (data) => {
+    const updateAppData = async (data) => {
 
         if(data.userInfo) saveUserInfo(data.userInfo)
         if(data.pollInfo) savePollInfo(data.pollInfo)
@@ -77,7 +77,7 @@ const CustomWebView = ({uri}) => {
         if(data.includes('인스타프로필')) return openInstagramProfile(data.replace('인스타프로필', ''))
         if(data.includes('알람권한변경')) return changeAlarmGrant()
         if(data.includes('초기화')) return signout()
-        if(data.includes('앱동기화')) return await updateAppDate(JSON.parse(data.replace('앱동기화', '')))
+        if(data.includes('앱동기화')) return await updateAppData(JSON.parse(data.replace('앱동기화', '')))
         if(data.includes('첫투표로컬푸시')) return await Notifications.scheduleNotificationAsync({
             content: JSON.parse(data.replace('첫투표로컬푸시', '')),
             trigger: { seconds: 1 },
@@ -124,6 +124,7 @@ const CustomWebView = ({uri}) => {
             }}
             source={{ uri: `${process.env.EXPO_PUBLIC_WEB_URL}/${uri}` }}
             onMessage={handleWebViewMessage}
+            // 가장 첫 웹뷰에서 값을 할당하기 위해서 필요함
             injectedJavaScript={`
                 window.localStorage.setItem('userInfo', "${JSON.stringify(userInfo).replace(/"/g, '\\"')}");
                 window.localStorage.setItem('pollInfo', "${JSON.stringify(pollInfo).replace(/"/g, '\\"')}");
