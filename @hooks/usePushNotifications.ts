@@ -1,7 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import Constants from 'expo-constants';
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 
 async function registerForPushNotificationsAsync() {
 
@@ -10,9 +10,8 @@ async function registerForPushNotificationsAsync() {
   let finalStatus = existingStatus;
 
   if (existingStatus !== 'granted') {
-
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
   }
 
   if (finalStatus !== 'granted') {
@@ -26,8 +25,10 @@ async function registerForPushNotificationsAsync() {
   }
 
   // 현재 이부분이 문제
-  const token = (await Notifications.getExpoPushTokenAsync()).data;
-
+  const token = (await Notifications.getExpoPushTokenAsync({
+    projectId: Constants.expoConfig.extra.eas.projectId,
+  })).data;
+  
   if (Platform.OS === 'android') {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
