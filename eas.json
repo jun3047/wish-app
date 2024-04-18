@@ -19,7 +19,8 @@
         "EXPO_PUBLIC_PHONE":"01075601770",
         "EXPO_PUBLIC_NAVER_SECRET_KEY":"yAnRTjBKmRrx7IF6d4FNYJ1XTstmvJaG3qwGbZCI",
         "EXPO_PUBLIC_NAVER_ACCESS_KEY_ID":"0SjUYG4ZLywpnwSqRcVVr",
-        "EXPO_PUBLIC_SERVICE_ID":"ncp:sms:kr:311286785865:find"
+        "EXPO_PUBLIC_SERVICE_ID":"ncp:sms:kr:311286785865:find",
+        "EXPO_PUBLIC_AMPLITUDE_KEY":"e66caa8537e664f131e86994b19cae12"
       },
       "channel": "production",
       "autoIncrement": true
