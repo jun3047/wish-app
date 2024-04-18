@@ -8,7 +8,7 @@
         "icon": "./assets/icon.png"
       },
       "bundleIdentifier": "com.delectatio.want",
-      "buildNumber": "1",
+      "buildNumber": "17",
       "splash": {
         "image": "./assets/splash.png"
       },
@@ -22,7 +22,12 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      [
+        "expo-updates",
+        {
+          "userName": "delectatio_jun"
+        }
+      ]
     ],
     "name": "WISH",
     "slug": "wish",
@@ -39,7 +44,7 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/e9723cac-047f-45a8-b6e0-626f30f2e52f"
+      "url": "https://u.expo.dev/bd39eaee-b2ab-44d7-9fa4-07b08addce95"
     },
     "android": {
       "splash": {
