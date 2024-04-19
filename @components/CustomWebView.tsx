@@ -13,6 +13,8 @@ import useUser from '../@hooks/useUser';
 import usePoll from '../@hooks/usePoll';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useGrant from '../@hooks/useGrant';
+import { UserType } from '../@type/user';
+import { PollType } from '../@type/poll';
 
 const CustomWebView = ({uri}) => {
 
@@ -39,7 +41,12 @@ const CustomWebView = ({uri}) => {
 
     }, [userInfo, pollInfo])
     
-    const updateAppData = async (data) => {
+    type webData = {
+        userInfo?: UserType,
+        pollInfo?: PollType
+    }
+
+    const updateAppData = async (data: webData) => {
 
         if(data.userInfo) saveUserInfo(data.userInfo)
         if(data.pollInfo) savePollInfo(data.pollInfo)

@@ -23,7 +23,6 @@ export default function useUser() {
 
   const save = async (value: UserType | null) => {
     try {
-      
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem('userInfo', jsonValue);
       setUser(value);
