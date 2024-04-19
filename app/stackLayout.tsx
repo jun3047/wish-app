@@ -63,16 +63,18 @@ const StackLayout = () => {
             console.log('writer:', data.writer)
         }
         else if(data.alarm) {
-            const newAlarm = 
+            const newAlarmList = 
                 !user?.alarms?.length ?
                 [data.alarm]:
                 [data.alarm, ...user.alarms]
+
+            const newAlarmSet = [...new Set(newAlarmList)]
 
             amplitude.track('view_reciveQ')
 
             await saveUserInfo({
                 ...user,
-                alarms: newAlarm
+                alarms: newAlarmSet
             })
         }
     }
