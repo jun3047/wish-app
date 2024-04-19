@@ -46,14 +46,16 @@ const StackLayout = () => {
         //     })
         // } 일방적인 친구 받기로 변경하면서 현재 사용하지 않음
         else if (data.beFriend) {
-            const newFriend = 
+            const newFriendList = 
                 !user?.friends?.length ? 
                 [data.beFriend]:
                 [data.beFriend, ...user.friends]
 
+            const newFriendSet = [...new Set(newFriendList)]
+
             await saveUserInfo({
                 ...user,
-                friends: newFriend,
+                friends: newFriendSet,
                 requestFriends: user.requestFriends.filter((user: SimpleUserType) => user.id !== data.beFriend.id)
             })
         }
