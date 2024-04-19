@@ -9,6 +9,7 @@ import useCapture from '../../../@hooks/useCaptrue';
 import useUser from '../../../@hooks/useUser';
 import { handleWebPush } from '../../../@hooks/usePushNotifications';
 import * as amplitude from '@amplitude/analytics-react-native';
+import useVibration from '../../../@hooks/useVibration';
 
 export default function Page() {
 
@@ -20,6 +21,7 @@ export default function Page() {
 
   const [loading, setLoading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
+  const vibration = useVibration();
 
   const contentRef = useRef<View>(null);
   const captureComponent = useCapture(contentRef);
@@ -59,7 +61,7 @@ export default function Page() {
         }
       }
     }])
-
+    
     setLoading(false);
     setUploaded(true);
   }
@@ -107,14 +109,24 @@ export default function Page() {
               <ActivityIndicator color="#000000" />
           </MainButton>:
           (image === null || isAutoSelect) ?
-          <MainButton onPress={pickImage}>
+          <MainButton onPress={()=>{
+              vibration()
+              pickImage()
+            }}>
               <ButtonText>갤러리에서 고르기</ButtonText>
           </MainButton>:
           <>
-          <MainButton onPress={upload}>
+          <MainButton onPress={async ()=>{
+              vibration()
+              await upload()
+              vibration()
+            }}>
           <ButtonText>바로 올리기</ButtonText>
           </MainButton>
-            <SubButton onPress={pickImage}>
+            <SubButton onPress={()=>{
+                vibration()
+                pickImage()
+              }}>
               다시 고르기
             </SubButton>
           </>
