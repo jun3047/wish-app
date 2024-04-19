@@ -8,7 +8,7 @@
         "icon": "./assets/icon.png"
       },
       "bundleIdentifier": "com.delectatio.want",
-      "buildNumber": "17",
+      "buildNumber": "20",
       "splash": {
         "image": "./assets/splash.png"
       },
