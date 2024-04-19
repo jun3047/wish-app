@@ -4,6 +4,7 @@ import styled from '@emotion/native';
 import useCapture from '../../../@hooks/useCaptrue';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { shareInsta } from '../../../@hooks/instaShare';
+import useUser from '../../../@hooks/useUser';
 
 export default () => {
 
@@ -11,11 +12,15 @@ export default () => {
     const [question, askerSchool, askerAge, gender] = id.toString().split(',')
 
     const [loading, setloading] = useState(false)
+    const [user, setUser] = useUser()
 
     const contentRef = useRef<View>(null);
     const captureComponent = useCapture(contentRef);
 
-    const myName = '정준';
+    const getOtherGender = (gender: '남자' | '여자') => gender === '남자' ? '여자' : '남자'
+
+    const displayAge = askerAge ?? user.age
+    const displayGender = gender ?? getOtherGender(user.gender)
   
     return (
         <>
@@ -26,9 +31,11 @@ export default () => {
             <Container>
                 <Content ref={contentRef}>
                     <InfoText>{askerSchool}</InfoText>
-                    <InfoText>{askerAge}살 {gender}<Light>에게</Light></InfoText>
+                    {
+                        <InfoText>{displayAge}살 {displayGender}<Light>에게</Light></InfoText>
+                    }
                     <Question question={question} />
-                    <FriendListContainer myName={myName}/>
+                    <FriendListContainer myName={user.name}/>
                     <Logo>WISH</Logo>
                 </Content>
                 <MainButton onPress={async ()=>{
