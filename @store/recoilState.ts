@@ -24,13 +24,3 @@ export const userState = atom<UserRegisterState>({
     schoolLocation: undefined,
   },
 });
-
-export const loaclUserInfoState = atom<UserType>({
-  key: 'userInfoState',
-  default: null,
-});
-
-export const loaclPollInfoState = atom<PollType>({
-  key: 'pollInfoState',
-  default: null,
-});
