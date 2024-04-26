@@ -1,312 +1,62 @@
-# WISH
+# WISH 프로젝트 소개  
+![썸네일](https://github.com/jun3047/wish-app/assets/25457470/9310d593-e995-47dd-aae8-0812c18b866e)
 
 
-## DB
+## WISH 소개
+익명 질문 기반, 사진 소셜 웹뷰 앱
+<br /><br />
 
-### user
-```ts
-interface UserType {
-    id: number;
-    token: string;
-    name: string;
-    age: number;
-    phone: string;
-    gender: "boy" | "girl";
-    friendIds: number[];
-    feedIds: number[];
-    requestFriendInfos: IRequestFriendInfo[];
-    addFriendIds: number[];
-    school?: string;
-    schoolLocation?: string;
-}
+## 🚀 배포링크
+[앱 스토어 바로가기](https://apps.apple.com/kr/app/wish-%EC%B9%9C%EA%B5%AC%EB%93%A4%EC%9D%B4-%EC%9B%90%ED%95%98%EB%8A%94-%EB%8B%B9%EC%8B%A0%EC%9D%98-%EC%82%AC%EC%A7%84/id6479183628)
+<br /><br />
 
-interface IRequestFriendInfo {
-    token: string;
-    gender: "boy" | "girl";
-    id: number;
-    name: string;
-    age: number;
-    school: string;
-    schoolLocation: string;
-    friendIds: number[];
-}
-```
+## 🧑🏻‍💻 기술스택
+- `react`, `react-native`, `typescript`
+- `react-query`, `recoil`, `axios`
+- `emotion`, `figma`, `anti`, `vercel`
+<br /><br />
 
-### alarm
-```ts
-interface AlarmType {
-    id: number;
-    question: string;
-    token: string;
-    name: string;
-    age: number;
-    gender: "boy" | "girl";
-    school?: string;
-    schoolLocation?: string;
-    friendIds: string[];
-}
-```
+## 🗓 개발 기간 & 일정
+1차 : 2024.3 ~ 2024.4
+<br /><br />
 
-### feed
-```ts
-interface FeedType {
-    id: number;
-    token: string;
-    question: string;
-    imgUrl: string;
-    warnUserIds: number[];
-    writer: FeedUserType;
-    asker: FeedUserType;
-    time: string;
-}
+## 프로젝트 상세 소개
+### 💡 핵심 기능
 
-interface FeedUserType {
-    id: number;
-    name: string;
-    token: string;
-    age: number;
-    school?: string;
-    schoolLocation?: string;
-}
-```
+가입 후 친구를 추가하여, 원하는 사진을 질문할 수 있습니다. (ex. 너가 가장 좋아하는 사진이 궁금해!)  
+이에 대한 답장을 사진을 업로드 해서 할 수 있고, 다른 친구들의 사진 또한 볼 수 있습니다.
+<br /><br />
 
-### poll
-```ts
-interface PollType {
-    id: number;
-    question: string;
-}
-```
-
-
-
-## API
-
-### 요청
-
-**user**  
-회원가입: ```POST/user```  
-프로필 조회: 🔐 ```GET/user/{id}```
+### 🙋🏻‍♂️ 타겟 유저
+친구 관계를 중요 시 생각하는 고등학생을 타깃으로 하였습니다.  
+실제 한 고등학교를 대상으로 인스타 선팔을 하는 전략으로 마케팅을 진행하였습니다.  
   
-**feed**  
-피드 작성하기: 🔐 ```POST/feed```  
-피드 가져오기: 🔐 ```GET/feeds```  
-글 신고하기: 🔐 ```PUT/feed/warn```  
-  
-**poll**  
-투표하기: 🔐 ```PUT/poll```  
-  
-**friend**  
-친구 요청: 🔐 ```PUT/friend/request```  
-친구 수락: 🔐 ```POST/friend```  
-추천 친구: 🔐 ```GET/friends```  
+허나 가입 전환에 실패하여, 원인 파악 및 다음 전략을 모색 중입니다.
+<br /><br />
 
 
+### 📝 서비스 구조도
+![구조도](https://github.com/jun3047/wish-app/assets/25457470/8ba2a8d7-3483-44e5-b410-e7656a798bc7)
+<br /><br />
 
-### POST/user
+## 🎨 페이지 및 기능
 
-가입합니다.
+### HOME 페이지
+#### 4명 이하 친구 없음 -> 친구추가 -> 투표 후 피드
+<img src="https://github.com/jun3047/wish-app/assets/25457470/3bd516d4-11b1-46bc-8ce1-324786a3e326.gif" width="300"/>
+<br /><br />
 
-#### rep
-```ts
-{
-    token: string;
-    name: string;
-    age: number;
-    phone: string;
-    gender: "boy" | "girl";
-    school?: string;
-    schoolLocation?: string;
-    requestFriendIds?: string[];
-}
-```
+### 홈 페이지
+#### 피드 / 무한스크롤, pull to refresh
+<img src="https://github.com/jun3047/wish-app/assets/25457470/336d7cd6-efb8-4fd1-8a03-d14d596d3fc1.gif" width="300"/>
+<br /><br />
 
-#### res
-```ts
-{
-    id: number
-}
-```
+### 친구 페이지
+#### 토큰 작업을 통해 받는 쪽도 확인할 수 있게 하였습니다.
+<img src="https://github.com/jun3047/wish-app/assets/25457470/3cb6c99c-4181-4970-8401-7688fa78a18b.gif" width="300"/>
+<br /><br />
 
-
-### GET/user/{id}
-
-유저의 프로필을 조회합니다.
-
-#### res
-```ts
-{
-    id: number;
-    token: string;
-    name: string;
-    age: number;
-    phone: string;
-    gender: "boy" | "girl";
-    friendIds: number[];
-    feedIds: number[];
-    school?: string;
-    schoolLocation?: string;
-}
-```
-
-
-### POST/feeds
-
-추천 피드를 가져옵니다.
-
-#### rep
-```ts
-{
-    warnFriendIds: number[];
-    friendIds: number[];
-    freindOfFriendIds: number[]
-}
-```
-
-#### res
-```ts
-{
-    id: number;
-    question: string;
-    imgUrl: string;
-    warnUserIds: number[]
-    writerId: number;
-    writerName: string;
-    askerId: number;
-    askerName: string;
-    time: string;
-}[]
-```
-
-
-### POST/feed
-피드를 씁니다.
-
-#### rep
-```ts
-{
-    question: string;
-    writer: FeedUserType;
-    asker: FeedUserType;
-}
-```
-
-#### res
-```ts
-{
-    id: number;
-    imgUrl: string;
-}
-```
-
-
-### PUT/feed/warn
-
-신고합니다.
-
-#### req
-```ts
-{
-    userId: number;
-    feedId: number;
-}
-```
-
-#### res
-```ts
-{
-    success: boolean;
-}
-```
-
-
-
-### PUT/poll
-
-투표합니다.
-
-#### req
-```ts
-{
-    question: string;
-    writer: FeedUserType;
-    asker: FeedUserType;
-}
-```
-
-#### res
-```ts
-{
-    success: boolean;
-}
-```
-
-### PUT/friend/request
-
-친구요청합니다.
-
-#### req
-```ts
-{
-    id: number;
-    name: string;
-    age: number;
-    school?: string;
-    schoolLocation?: string;
-    
-    friendIds: string[]
-    targetId: number;
-    targetToken: string;
-}
-```
-
-#### res
-```ts
-{
-    success: boolean
-}
-```
-
-### POST/friend
-친구 요청을 수락합니다.
-
-#### req
-```ts
-{
-    user: FeedUserType;
-    targetId: number;
-    targetToken: number;
-}
-```
-
-#### res
-```ts
-{
-    success: boolean
-}
-```
-
-### POST/friend/recommend
-
-#### req
-```ts
-{
-    phoneList: string[];
-    school?: string;
-    schoolLocation?: string;
-    friendIds?: string[];
-}
-```
-
-#### res
-```ts
-{
-    id: number;
-    name: string;
-    age: number;
-    gender: "boy" | "girl";
-    school?: string;
-    schoolLocation?: string
-    friendIds?: string[];
-}[]
-```
+### 알람 페이지
+#### 투표를 받으면 그에 맞는 사진을 올리고, 인스타에 공유할 수 있습니다.
+<img src="https://github.com/jun3047/wish-app/assets/25457470/44c47bdf-dbaf-49ff-aa55-d61a51ee44da.gif" width="300"/>
+<br /><br />
