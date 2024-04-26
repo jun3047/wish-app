@@ -1,6 +1,20 @@
-# WISH 프로젝트 소개  
+# WISH - WEB
 ![썸네일](https://github.com/jun3047/wish-app/assets/25457470/9310d593-e995-47dd-aae8-0812c18b866e)
 
+## 이 앱은 웹뷰 앱입니다.
+
+회원가입 화면과 TAB, Stach, 카메라 등 같은 네이티브 기능이 필요한 화면은 React Native으로 개발되었습니다.  
+그 위에 모든 화면은 React로 개발되었습니다.  
+상세한 RN / React로 개발된 부분은 다음과 같습니다.  
+
+<span style="color:yellow">노란색</span> -> React Native  
+<span style="color:blue">파란색</span> -> React  
+
+
+![웹뷰앱구조](https://github.com/jun3047/wish-react/assets/25457470/75b3a94f-7605-4173-8005-0e37f4e36629)
+
+
+<br /><br />
 
 ## WISH 소개
 익명 질문 기반, 사진 소셜 웹뷰 앱
@@ -34,12 +48,14 @@
 허나 가입 전환에 실패하여, 원인 파악 및 다음 전략을 모색 중입니다.
 <br /><br />
 
-
 ### 📝 서비스 구조도
 ![구조도](https://github.com/jun3047/wish-app/assets/25457470/8ba2a8d7-3483-44e5-b410-e7656a798bc7)
 <br /><br />
 
 ## 🎨 페이지 및 기능
+
+### 가입
+
 
 ### HOME 페이지
 #### 4명 이하 친구 없음 -> 친구추가 -> 투표 후 피드
@@ -60,3 +76,7 @@
 #### 투표를 받으면 그에 맞는 사진을 올리고, 인스타에 공유할 수 있습니다.
 <img src="https://github.com/jun3047/wish-app/assets/25457470/44c47bdf-dbaf-49ff-aa55-d61a51ee44da.gif" width="300"/>
 <br /><br />
+
+### 마이 페이지
+#### 친구 수, 내가 올린 글, 탈퇴 등을 할 수 있는 곳입니다.
+<img src="https://github.com/jun3047/wish-react/assets/25457470/05156b5e-bead-4ba3-995d-46bebc5d48ca.gif" width="300"/>
